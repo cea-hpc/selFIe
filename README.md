@@ -2,7 +2,7 @@
 
 **selFIe** (SElf and Light proFIling Engine) is a tool to lightly profile Linux commands without compiling.
 
-selFIe is a dynamic library which can be given to the LD_PRELOAD variable before the execution of the command.
+selFIe is a dynamic library which can be given to the LD_PRELOAD environment variable before the execution of the command.
 
 ```
 $ LD_PRELOAD=selfie.so hostname
@@ -57,6 +57,34 @@ $ grep selfie /var/log/syslog
 selfie[26135]: { "utime": 0.01, "stime": 0.00, "maxmem": 0.00, "posixio_time": 0.00, "posixio_count": 7569, "papi_ipc": 0.50, "papi_mem_bw": 13.62, "mpi_time": 0.00, "mpi_count": 0, "mpiio_time": 0.00, "mpiio_count": 0, "USER": "user", "wtime": 0.01, "command": "/bin/hostname" }
 selfie[26040]: { "utime": 0.02, "stime": 0.04, "maxmem": 0.01, "posixio_time": 0.04, "posixio_count": 8383, "papi_ipc": 0.93, "papi_mem_bw": 143.62, "mpi_time": 0.10, "mpi_count": 2, "mpi_version": 3.00, "mpi_libversion": "open mpi", "mpiio_time": 0.00, "mpiio_count": 0, "mpiio_version": 3.00, "mpiio_libversion": "open mpi", "USER": "user", "wtime": 0.10, "command": "./a.out" }
 ```
+## Configuration
+The behaviour of selFIe can be configured in the file *<path-to-install>/etc/selfie.conf*. The default configuration is the following settings:
+```
+env_vars:
+- USER
+- OMP_NUM_THREADS
+
+time_limit: 5.0
+
+exclude_commands:
+- ^/bin/
+- ^/sbin/
+- ^/usr/libexec/
+- ^/usr/bin/
+
+```
+This file is divided in three parts:
+* env_vars: this section lists the environment variables you want to log along the profiling.
+* time_limit: to avoid flooding system logs, selFIe can be configured to log only commands that lasts at least a time. By default, this time is 5 seconds.
+* exclude_commands: to avoid flooding system logs, selFIe can be configured to not log some commands. The section lists the commands that will not generate logs in log facility. You can specify a regular expression. By default, selFIe doesn't not log commands located in directories /bin, /sbin, /usr/libexec and /usr/bin.
+
+By setting the environment variable SELFIE_CONFIGFILE, you can specify another configuration file for selFIe.
+
+```
+$ export SELFIE_CONFIGFILE=${HOME}/myselfie.conf
+```
+
+
 ## Contributing
 ## Authors
 See the list of [AUTHORS](AUTHORS) who participated in this project.
@@ -80,7 +108,7 @@ selFIe is based on two features:
 
 Copyright 2015-2017 CEA/DAM/DIF<br />
 <br />
-HP2P is distributed under the CeCILL-C. See the included files <br />
+selFIe is distributed under the CeCILL-C. See the included files <br />
 Licence_CeCILL-C_V1-en.txt (English version) and <br />
 Licence_CeCILL-C_V1-fr.txt (French version) or visit  <br />
 http://www.cecill.info for details.
