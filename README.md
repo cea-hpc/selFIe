@@ -58,7 +58,7 @@ selfie[26135]: { "utime": 0.01, "stime": 0.00, "maxmem": 0.00, "posixio_time": 0
 selfie[26040]: { "utime": 0.02, "stime": 0.04, "maxmem": 0.01, "posixio_time": 0.04, "posixio_count": 8383, "papi_ipc": 0.93, "papi_mem_bw": 143.62, "mpi_time": 0.10, "mpi_count": 2, "mpi_version": 3.00, "mpi_libversion": "open mpi", "mpiio_time": 0.00, "mpiio_count": 0, "mpiio_version": 3.00, "mpiio_libversion": "open mpi", "USER": "user", "wtime": 0.10, "command": "./a.out" }
 ```
 ## Configuration
-The behaviour of selFIe can be configured in the file *<path-to-install>/etc/selfie.conf*. The default configuration is the following settings:
+The behaviour of selFIe can be configured in the file *<path-to-install>/etc/selfie.conf*. The default configuration has the following settings:
 ```
 env_vars:
 - USER
@@ -83,6 +83,10 @@ By setting the environment variable SELFIE_CONFIGFILE, you can specify another c
 ```
 $ export SELFIE_CONFIGFILE=${HOME}/myselfie.conf
 ```
+For profiling MPI codes, you should add the following environment variable to track the MPI rank of MPI processus depending which MPI library you use:
+* **SLURM_PROCID** when using SLURM for launching MPI jobs
+* **OMPI_COMM_WORLD_RANK** for OpenMPI
+* **PMI_RANK** for IntelMPI
 
 
 ## Contributing
