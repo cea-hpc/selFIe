@@ -193,19 +193,22 @@ if test $LIBPAPIPATHSET = 1 ; then
 	   AC_MSG_CHECKING([PAPI prefix])
 	   AC_MSG_RESULT([$with_papi])
 	   PAPI_PREFIX="$with_papi"
-	else
-           PAPI_PREFIX="/usr"
-	fi
-	AC_CHECK_FILE([$PAPI_PREFIX/include/papi.h], 
+	   AC_CHECK_FILE([$PAPI_PREFIX/include/papi.h], 
 		      [PAPI_INCLUDE="$PAPI_PREFIX/include/papi.h"])
-	AC_CHECK_FILE([$PAPI_PREFIX/lib/libpapi.so], 
+	   AC_CHECK_FILE([$PAPI_PREFIX/lib/libpapi.so], 
 		      [LIBPAPI_PATH="$PAPI_PREFIX/lib"])
-	AC_CHECK_FILE([$PAPI_PREFIX/lib64/libpapi.so], 
+	   AC_CHECK_FILE([$PAPI_PREFIX/lib64/libpapi.so], 
 		      [LIBPAPI_PATH="$PAPI_PREFIX/lib64"]) 
-        AM_CXXFLAGS="$AM_CXXFLAGS -I$PAPI_PREFIX/include"
-        AM_CPPFLAGS="$AM_CPPFLAGS -I$PAPI_PREFIX/include"
-        AM_CFLAGS="$AM_CFLAGS -I$PAPI_PREFIX/include"
-        LIBS="$LIBS $LIBPAPI_PATH/libpapi.so"
+           AM_CXXFLAGS="$AM_CXXFLAGS -I$PAPI_PREFIX/include"
+           AM_CPPFLAGS="$AM_CPPFLAGS -I$PAPI_PREFIX/include"
+           AM_CFLAGS="$AM_CFLAGS -I$PAPI_PREFIX/include"
+	   LIBS="$LIBS $LIBPAPI_PATH/libpapi.so"
+	   AC_DEFINE_UNQUOTED([SELFIE_PAPILIBPATH],["$LIBPAPI_PATH"],[Enable directory where to find libpapi.so])
+	else
+	   LIBS="$LIBS -lpapi"
+	   AC_DEFINE_UNQUOTED([SELFIE_PAPILIBPATH],["/usr/lib/x86_64-linux-gnu/"],[Enable directory where to find libpapi.so])
+	fi
+
         AC_CHECK_FUNCS([PAPI_library_init], [], [AC_MSG_ERROR([Unable to use PAPI])])
         AC_CHECK_FUNCS([PAPI_library_init])
         AC_CHECK_FUNCS([PAPI_multiplex_init])
@@ -216,7 +219,6 @@ if test $LIBPAPIPATHSET = 1 ; then
         AC_CHECK_FUNCS([PAPI_stop])
         AC_CHECK_FUNCS([PAPI_cleanup_eventset])
         AC_CHECK_FUNCS([PAPI_destroy_eventset])
-	AC_DEFINE_UNQUOTED([SELFIE_PAPILIBPATH],["$LIBPAPI_PATH"],[Enable directory where to find libpapi.so])
 	AC_DEFINE_UNQUOTED([SELFIE_PAPILIB],["libpapi.so"],[Name of PAPI library])
     fi
 fi
