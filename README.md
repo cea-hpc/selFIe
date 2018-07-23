@@ -88,6 +88,14 @@ For profiling MPI codes, you should add the following environment variable to tr
 * **OMPI_COMM_WORLD_RANK** for OpenMPI
 * **PMI_RANK** for IntelMPI
 
+If you want to put log in other place than syslog, you can set SELFIE_OUTPUTFILE with a filename:
+
+```
+$ export SELFIE_OUTPUTFILE=/tmp/selfie.out
+$ LD_PRELOAD=selfie.so hostname
+$ cat $SELFIE_OUTPUTFILE
+{ "utime": 0.00, "stime": 0.01, "maxmem": 0.00, "posixio_time": 0.00, "posixio_count": 7569, "USER": "user", "timestamp": 1500000, "wtime": 0.01, "command": "/bin/hostname" }
+```
 
 ## Contributing
 ## Authors
