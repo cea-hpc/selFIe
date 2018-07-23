@@ -789,7 +789,6 @@ int selfie_write_log(params_in *in, params_out *out)
 
   if (display == 1)
   {
-    fprintf(stderr, "%s\n", in->outputfile);
     // Add env_vars to log
     for (i = 0; i < in->nb_env_vars; i++)
     {
