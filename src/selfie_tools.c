@@ -147,7 +147,7 @@ int selfie_free_params_in(params_in *in)
 
   if (in->cmdline != NULL)
     free(in->cmdline);
-  
+
   if (in->outputfile != NULL)
     free(in->outputfile);
 
@@ -413,7 +413,7 @@ int selfie_llist_free(selfie_llist list)
   return EXIT_SUCCESS;
 };
 
-// YAML parsing configuration file
+  // YAML parsing configuration file
 
 #include <yaml.h>
 
@@ -700,9 +700,9 @@ int selfie_read_env_vars(params_in *in)
   tmp_string = getenv(list[1]);
   if (tmp_string != NULL)
   {
-    in->outputfile = (char *) malloc((1+strlen(tmp_string))*sizeof(char));
+    in->outputfile = (char *)malloc((1 + strlen(tmp_string)) * sizeof(char));
     strncpy(in->outputfile, tmp_string, strlen(tmp_string));
-  } 
+  }
   else
   {
     in->outputfile = NULL;
@@ -753,7 +753,7 @@ int selfie_check_exclude(params_in *in)
 // Writing logs
 
 /// \details
-int selfie_write_outputfile(char *filename, char* outlog)
+int selfie_write_outputfile(char *filename, char *outlog)
 {
   FILE *f_output = NULL;
   int f_err = 0;
@@ -764,7 +764,7 @@ int selfie_write_outputfile(char *filename, char* outlog)
     f_err = fprintf(f_output, "%s\n", outlog);
     f_err = fclose(f_output);
   }
-  
+
   return EXIT_SUCCESS;
 }
 
@@ -789,7 +789,7 @@ int selfie_write_log(params_in *in, params_out *out)
 
   if (display == 1)
   {
-    fprintf(stderr, "%s\n", in->outputfile);    
+    fprintf(stderr, "%s\n", in->outputfile);
     // Add env_vars to log
     for (i = 0; i < in->nb_env_vars; i++)
     {
@@ -798,7 +798,7 @@ int selfie_write_log(params_in *in, params_out *out)
 	selfie_json_string_to_log(out, in->env_vars[i], in->env_vars_values[i]);
       }
     }
-    
+
     // Add timestamp
     selfie_json_llu_to_log(out, "timestamp", (unsigned long long)time(NULL));
 
@@ -834,11 +834,11 @@ int selfie_write_log(params_in *in, params_out *out)
     closelog();
 
     // Outputfile
- 
+
     if (in->outputfile != NULL)
     {
       selfie_write_outputfile(in->outputfile, json_string);
-    }  
+    }
 
     free(json_string);
   }
