@@ -102,6 +102,7 @@ int selfie_alloc_params_in(params_in *in)
   in->nb_exclude_commands = 0;
   in->exclude_commands = NULL;
   in->log_print = 0;
+  in->outputfile = NULL;
 
   selfie_getcmdline(cmdline);
   in->cmdline = strdup(cmdline);
@@ -146,6 +147,9 @@ int selfie_free_params_in(params_in *in)
 
   if (in->cmdline != NULL)
     free(in->cmdline);
+  
+  if (in->outputfile != NULL)
+    free(in->outputfile);
 
   in->enable = 0;
 
@@ -692,6 +696,17 @@ int selfie_read_env_vars(params_in *in)
   {
     in->log_print = atoi(tmp_string);
   }
+  // get output file
+  tmp_string = getenv(list[1]);
+  if (tmp_string != NULL)
+  {
+    in->outputfile = (char *) malloc((1+strlen(tmp_string))*sizeof(char));
+    strncpy(in->outputfile, tmp_string, strlen(tmp_string));
+  } 
+  else
+  {
+    in->outputfile = NULL;
+  }
   return EXIT_SUCCESS;
 };
 
@@ -738,6 +753,22 @@ int selfie_check_exclude(params_in *in)
 // Writing logs
 
 /// \details
+int selfie_write_outputfile(char *filename, char* outlog)
+{
+  FILE *f_output = NULL;
+  int f_err = 0;
+
+  f_output = fopen(filename, "a");
+  if (f_output != NULL)
+  {
+    f_err = fprintf(f_output, "%s\n", outlog);
+    f_err = fclose(f_output);
+  }
+  
+  return EXIT_SUCCESS;
+}
+
+/// \details
 int selfie_write_log(params_in *in, params_out *out)
 {
   char *json_string = NULL;
@@ -758,6 +789,7 @@ int selfie_write_log(params_in *in, params_out *out)
 
   if (display == 1)
   {
+    fprintf(stderr, "%s\n", in->outputfile);    
     // Add env_vars to log
     for (i = 0; i < in->nb_env_vars; i++)
     {
@@ -766,6 +798,9 @@ int selfie_write_log(params_in *in, params_out *out)
 	selfie_json_string_to_log(out, in->env_vars[i], in->env_vars_values[i]);
       }
     }
+    
+    // Add timestamp
+    selfie_json_llu_to_log(out, "timestamp", (unsigned long long)time(NULL));
 
     // Add wtime
     selfie_json_double_to_log(out, "wtime", out->wtime);
@@ -797,6 +832,13 @@ int selfie_write_log(params_in *in, params_out *out)
     }
     syslog(LOG_INFO, json_string);
     closelog();
+
+    // Outputfile
+ 
+    if (in->outputfile != NULL)
+    {
+      selfie_write_outputfile(in->outputfile, json_string);
+    }  
 
     free(json_string);
   }
