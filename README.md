@@ -118,7 +118,7 @@ selFIe is based on two features:
 
 ## License
 
-Copyright 2015-2017 CEA/DAM/DIF<br />
+Copyright 2015-2018 CEA/DAM/DIF<br />
 <br />
 selFIe is distributed under the CeCILL-C. See the included files <br />
 Licence_CeCILL-C_V1-en.txt (English version) and <br />
