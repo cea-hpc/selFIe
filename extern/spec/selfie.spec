@@ -36,6 +36,7 @@ rm -rf %{_buildrootdir}/*
 %{_prefix}/lib64/selfie.so
 %{_prefix}/lib64/selfie.la
 %{_prefix}/share/doc/selfie
+%doc %{_prefix}/share/doc/selfie/README.md
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 
 %changelog

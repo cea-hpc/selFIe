@@ -1,5 +1,7 @@
 # Specfile to generate a custom RPM to install software in another place
 # This RPM include a specific version of PAPI
+# You have to type QA_RPATHS=$[ 0x0002 ] rpmbuild -ba ccc_selfie.spec to remove error
+# concerning RPATHs 
 
 %define  debug_package %{nil}
 # Put this package in SOURCES directory
@@ -57,6 +59,7 @@ rm -rf %{_buildrootdir}/*
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 %defattr(-,root,root)
 %dir %{_prefix}
+%doc %{_prefix}/share/doc/selfie/README.md
 %{_prefix}
 
 %changelog
