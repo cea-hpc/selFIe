@@ -1,6 +1,6 @@
 %define  debug_package %{nil}
 
-Name:           selFIe
+Name:           selfie
 Version:        1.0.2b0
 Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine

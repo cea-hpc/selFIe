@@ -7,7 +7,7 @@
 # Put this package in SOURCES directory
 %define  _papi_version 5.6.0
 
-Name:           selFIe
+Name:           selfie
 Version:        1.0.2b0
 Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine
