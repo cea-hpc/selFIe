@@ -750,6 +750,36 @@ int selfie_check_exclude(params_in *in)
   return in->enable;
 }
 
+// /// \detail  replace all occurrence of "str" with "rep" in "src"
+// void strreplace(char *src, char *str, char *rep)
+// {
+//   char *p = strstr(src, str);
+//   do
+//   {
+//     if (p)
+//     {
+//       char buf[1024];
+//       memset(buf, '\0', strlen(buf));
+
+//       if (src == p)
+//       {
+// 	strcpy(buf, rep);
+// 	strcat(buf, p + strlen(str));
+//       }
+//       else
+//       {
+// 	strncpy(buf, src, strlen(src) - strlen(p));
+// 	strcat(buf, rep);
+// 	strcat(buf, p + strlen(str));
+//       }
+
+//       memset(src, '\0', strlen(src));
+//       strcpy(src, buf);
+//     }
+
+//   } while (p && (p = strstr(src, str)));
+// }
+
 // Writing logs
 
 /// \details
