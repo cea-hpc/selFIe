@@ -93,7 +93,10 @@ function bridge_addon_msub_alterscript {
 	else
 	    export LD_PRELOAD=${SELFIE_LIB}:${LD_PRELOAD}
 	fi
-	export SELFIE_OUTPUTFILE=${SELFIE_OUTPUTFILE}
+	if [[ -z "SELFIE_OUTPUTFILE" ]]
+	then
+	    export SELFIE_OUTPUTFILE=${SELFIE_DEFAULT_OUTPUTFILE}
+	fi
 	${LOGGER} "LD_PRELOAD is now ${LD_PRELOAD}"
     else
 	${LOGGER} "LD_PRELOAD was not modified"
@@ -187,7 +190,10 @@ function bridge_addon_mprun_spmd_pre_run {
 	    else
 		export LD_PRELOAD=${SELFIE_LIB}:${LD_PRELOAD}
 	    fi
-	    export SELFIE_OUTPUTFILE=${SELFIE_OUTPUTFILE}
+	    if [[ -z "SELFIE_OUTPUTFILE" ]]
+	    then
+		export SELFIE_OUTPUTFILE=${SELFIE_DEFAULT_OUTPUTFILE}
+	    fi
 	    ${LOGGER} "LD_PRELOAD is now ${LD_PRELOAD}"
 	else
 	    ${LOGGER} "LD_PRELOAD was not modified"
