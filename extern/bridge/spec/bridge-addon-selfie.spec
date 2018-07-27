@@ -1,6 +1,6 @@
 Name:           bridge-addon-selfie
 Version:        1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Bridge addon for enable selfie profiling in Bridge jobs
 
 License:        GPL License
@@ -39,6 +39,10 @@ rm -rf %{_topdir}/BUILD/%{name}
 %attr(0644,root,root) /etc/bridge/bridge_selfie.conf
 
 %changelog
+* Tue Jul 26 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.3-3
+- Correction in selfie.ad
+
 * Tue Jul 26 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.3-2
 - Change default output file naming policy
