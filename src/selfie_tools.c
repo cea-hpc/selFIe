@@ -701,7 +701,7 @@ int selfie_read_env_vars(params_in *in)
   if (tmp_string != NULL)
   {
     in->outputfile = (char *)malloc((1 + strlen(tmp_string)) * sizeof(char));
-    strncpy(in->outputfile, tmp_string, strlen(tmp_string));
+    strncpy(in->outputfile, tmp_string, strlen(tmp_string) + 1);
   }
   else
   {
