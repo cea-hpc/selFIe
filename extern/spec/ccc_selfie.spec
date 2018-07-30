@@ -9,7 +9,7 @@
 
 Name:           selfie
 Version:        1.0.2b0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SElf and Light proFIling Engine
 
 License:        GPL License
@@ -63,6 +63,10 @@ rm -rf %{_buildrootdir}/*
 %{_prefix}
 
 %changelog
+* Tue Jul 31 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.0.2b0 release 2
+- Correction to get outputfilename
+
 * Tue Jul 24 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.2b0 release
 - Add output file feature
