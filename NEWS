@@ -1,3 +1,18 @@
-* Initial release selfie-1.0 - 19/04/2017
-=====================
+# Changelog
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+	### Added
+- Add feature for writing logs in an user file
+
+	### Changed
+
+## [1.0.1] Initial release selfie-1.0.1 - 01/12/2017
+	### Added
+
+	### Changed
+- Update Makefile for shared libraries
+
+## [1.0.0] Initial release selfie-1.0.0 - 19/04/2017
+
 
