@@ -415,6 +415,8 @@ int selfie_llist_free(selfie_llist list)
       free(temp_->chaine);
       free(temp_);
     }
+    free(temp->chaine);
+    free(temp);
     return EXIT_SUCCESS;
   }
   return EXIT_SUCCESS;
