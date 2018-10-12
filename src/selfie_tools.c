@@ -102,6 +102,7 @@ int selfie_alloc_params_in(params_in *in)
   in->nb_exclude_commands = 0;
   in->exclude_commands = NULL;
   in->log_print = 0;
+  in->outputfile = NULL;
 
   selfie_getcmdline(cmdline);
   in->cmdline = strdup(cmdline);
@@ -146,6 +147,9 @@ int selfie_free_params_in(params_in *in)
 
   if (in->cmdline != NULL)
     free(in->cmdline);
+
+  if (in->outputfile != NULL)
+    free(in->outputfile);
 
   in->enable = 0;
 
@@ -409,7 +413,7 @@ int selfie_llist_free(selfie_llist list)
   return EXIT_SUCCESS;
 };
 
-// YAML parsing configuration file
+  // YAML parsing configuration file
 
 #include <yaml.h>
 
@@ -692,6 +696,17 @@ int selfie_read_env_vars(params_in *in)
   {
     in->log_print = atoi(tmp_string);
   }
+  // get output file
+  tmp_string = getenv(list[1]);
+  if (tmp_string != NULL)
+  {
+    in->outputfile = (char *)malloc((1 + strlen(tmp_string)) * sizeof(char));
+    strncpy(in->outputfile, tmp_string, strlen(tmp_string) + 1);
+  }
+  else
+  {
+    in->outputfile = NULL;
+  }
   return EXIT_SUCCESS;
 };
 
@@ -735,7 +750,53 @@ int selfie_check_exclude(params_in *in)
   return in->enable;
 }
 
+// /// \detail  replace all occurrence of "str" with "rep" in "src"
+// void strreplace(char *src, char *str, char *rep)
+// {
+//   char *p = strstr(src, str);
+//   do
+//   {
+//     if (p)
+//     {
+//       char buf[1024];
+//       memset(buf, '\0', strlen(buf));
+
+//       if (src == p)
+//       {
+// 	strcpy(buf, rep);
+// 	strcat(buf, p + strlen(str));
+//       }
+//       else
+//       {
+// 	strncpy(buf, src, strlen(src) - strlen(p));
+// 	strcat(buf, rep);
+// 	strcat(buf, p + strlen(str));
+//       }
+
+//       memset(src, '\0', strlen(src));
+//       strcpy(src, buf);
+//     }
+
+//   } while (p && (p = strstr(src, str)));
+// }
+
 // Writing logs
+
+/// \details
+int selfie_write_outputfile(char *filename, char *outlog)
+{
+  FILE *f_output = NULL;
+  int f_err = 0;
+
+  f_output = fopen(filename, "a");
+  if (f_output != NULL)
+  {
+    f_err = fprintf(f_output, "%s\n", outlog);
+    f_err = fclose(f_output);
+  }
+
+  return EXIT_SUCCESS;
+}
 
 /// \details
 int selfie_write_log(params_in *in, params_out *out)
@@ -767,6 +828,9 @@ int selfie_write_log(params_in *in, params_out *out)
       }
     }
 
+    // Add timestamp
+    selfie_json_llu_to_log(out, "timestamp", (unsigned long long)time(NULL));
+
     // Add wtime
     selfie_json_double_to_log(out, "wtime", out->wtime);
 
@@ -797,6 +861,13 @@ int selfie_write_log(params_in *in, params_out *out)
     }
     syslog(LOG_INFO, json_string);
     closelog();
+
+    // Outputfile
+
+    if (in->outputfile != NULL)
+    {
+      selfie_write_outputfile(in->outputfile, json_string);
+    }
 
     free(json_string);
   }

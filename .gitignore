@@ -42,6 +42,8 @@ ltmain.sh
 m4/
 missing
 
+*.tar.gz
+
 src/selfie_posixio_functions.h
 src/selfie_mpi_functions.h
 src/selfie_mpiio_functions.h
