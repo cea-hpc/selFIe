@@ -1,0 +1,224 @@
+#*****************************************************************************\
+#  scripts/addons/selfie.ad -
+#******************************************************************************
+#  Copyright  CEA/DAM/DIF (2018)
+#
+#  This file is part of Bridge, an abstraction layer to ease batch system and
+#  resource manager usage in heterogeneous HPC environments.
+#
+#  Bridge is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Bridge is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Bridge.  If not, see <http://www.gnu.org/licenses/>
+#*****************************************************************************/
+
+#################################################################################
+#
+# Addon for selfie profiling support in Bridge for both msub and mprun
+#
+#################################################################################
+
+#################################################################################
+# MSUB QOS support
+#--------------------------------------------------------------------------------
+function bridge_addon_msub_setopt {
+
+    return 0
+
+}
+
+function bridge_addon_msub_getopt {
+
+    return 0
+}
+
+function bridge_addon_msub_alteropt {
+
+    return 0
+}
+
+function bridge_addon_msub_alterscript {
+
+    ## Debug mode
+    typeset -i BRIDGE_DEBUG_LEVEL=${BRIDGE_DEBUG_LEVEL:-0}+1
+    if [ "${BRIDGE_DEBUG_MODE}" = "yes" ] && [[ ${BRIDGE_DEBUG_LEVEL} -le ${BRIDGE_DEBUG_MAXLEVEL} ]]
+	then
+	set -x
+    fi
+
+    ## Increase verbosity level
+    typeset -i BRIDGE_VERBOSE_LEVEL=${BRIDGE_VERBOSE_LEVEL:-0}+1
+
+    ## Header for log
+    typeset LOGGER="${LOGGER} Bridge Selfie Addon :"
+    typeset ERROR="${ERROR} Bridge Selfie Addon :"
+
+    ## Read config file if SELFIE_LIB is void
+    if [[ -z "${SELFIE_LIB}" ]]
+    then
+	if [[ -f /etc/bridge/bridge_selfie.conf ]]
+	then
+	    source /etc/bridge/bridge_selfie.conf
+	fi
+    fi
+
+    ## Set SELFIE_MSUB
+    if [[ -z "${SELFIE_MSUB}" ]]
+    then
+	export SELFIE_MSUB=0
+    else
+	if [[ ${SELFIE_MSUB} -ne 1 ]]
+	then
+	    export SELFIE_MSUB=0
+	fi
+    fi
+
+    ## Set LD_PRELOAD
+    if [[ -n "${SELFIE_LIB}" ]] \
+	&& [[ ${SELFIE_MSUB} -eq 1 ]] \
+	&& [[ ! "${LD_PRELOAD}" =~ "${SELFIE_LIB}" ]] \
+	&& [[ -f "${SELFIE_LIB}" ]]
+    then
+	if [[ -z "${LD_PRELOAD}" ]]
+	then
+	    export LD_PRELOAD=${SELFIE_LIB}
+	else
+	    export LD_PRELOAD=${SELFIE_LIB}:${LD_PRELOAD}
+	fi
+	if [[ -z "${SELFIE_OUTPUTFILE}" ]]
+	then
+	    export SELFIE_OUTPUTFILE=${SELFIE_DEFAULT_OUTPUTFILE}
+	else
+	    export SELFIE_OUTPUTFILE=${SELFIE_OUTPUTFILE}
+	fi
+	${LOGGER} "LD_PRELOAD is now ${LD_PRELOAD}"
+    else
+	${LOGGER} "LD_PRELOAD was not modified"
+    fi
+    
+    return 0
+}
+#################################################################################
+
+
+#################################################################################
+# MPRUN QOS support
+#--------------------------------------------------------------------------------
+function bridge_addon_mprun_setopt {
+
+    return 0
+
+}
+
+function bridge_addon_mprun_getopt {
+
+    return 0
+}
+
+function bridge_addon_mprun_alteropt {
+
+    return 0
+
+}
+
+function bridge_addon_mprun_spmd_pre_allocate {
+
+    return 0
+
+}
+
+function bridge_addon_mprun_spmd_post_allocate {
+
+    return 0
+
+}
+
+function bridge_addon_mprun_spmd_pre_run {
+
+    ## Debug mode
+    typeset -i BRIDGE_DEBUG_LEVEL=${BRIDGE_DEBUG_LEVEL:-0}+1
+    if [ "${BRIDGE_DEBUG_MODE}" = "yes" ] && [[ ${BRIDGE_DEBUG_LEVEL} -le ${BRIDGE_DEBUG_MAXLEVEL} ]]
+	then
+	set -x
+    fi
+
+    ## Increase verbosity level
+    typeset -i BRIDGE_VERBOSE_LEVEL=${BRIDGE_VERBOSE_LEVEL:-0}+1
+
+    ## Header for log
+    typeset LOGGER="${LOGGER} Bridge Selfie Addon :"
+    typeset ERROR="${ERROR} Bridge Selfie Addon :"
+
+    ## Read config file if SELFIE_LIB is void
+    if [[ -z "${SELFIE_LIB}" ]]
+    then
+	if [[ -f /etc/bridge/bridge_selfie.conf ]]
+	then
+	    source /etc/bridge/bridge_selfie.conf
+	fi
+    fi
+
+    ## Set SELFIE_MPRUN
+    if [[ -z "${SELFIE_MPRUN}" ]]
+    then
+	export SELFIE_MPRUN=0
+    else
+	if [[ ${SELFIE_MPRUN} -ne 1 ]]
+	then
+	    export SELFIE_MPRUN=0
+	fi
+    fi
+
+    ## If Bridge interactive addon is enabled, disable Selfie
+    if [[ ${BRIDGE_MPRUN_ADDON_SHELL} -ne 1 ]]
+    then
+	## Set LD_PRELOAD if MPRUN is enabled
+	if [[ -n "${SELFIE_LIB}" ]] \
+	    && [[ ${SELFIE_MPRUN} -eq 1 ]] \
+	    && [[ ! "${LD_PRELOAD}" =~ "${SELFIE_LIB}" ]] \
+	    && [[ -f "${SELFIE_LIB}" ]]
+	then
+	    if [[ -z "${LD_PRELOAD}" ]]
+	    then
+		export LD_PRELOAD=${SELFIE_LIB}
+	    else
+		export LD_PRELOAD=${SELFIE_LIB}:${LD_PRELOAD}
+	    fi
+	    if [[ -z "${SELFIE_OUTPUTFILE}" ]]
+	    then
+		export SELFIE_OUTPUTFILE=${SELFIE_DEFAULT_OUTPUTFILE}
+	    else
+		export SELFIE_OUTPUTFILE=${SELFIE_OUTPUTFILE}
+	    fi
+	    ${LOGGER} "LD_PRELOAD is now ${LD_PRELOAD}"
+	else
+	    ${LOGGER} "LD_PRELOAD was not modified"
+	fi
+	## Unset LD_PRELOAD if MPRUN is disabled and MSUB enabled
+	if [[ ${SELFIE_MPRUN} -eq 0 ]] && [[ ! "${LD_PRELOAD}" =~ "${SELFIE_LIB}" ]]
+	then
+	    export LD_PRELOAD=$(echo ${LD_PRELOAD} | sed "1s[${SELFIE_LIB} [[" | tr -s ':')
+	    ${LOGGER} "LD_PRELOAD is now ${LD_PRELOAD}"
+	fi
+    else
+	${LOGGER} "Interactive Shell mode on: LD_PRELOAD was not modified"
+    fi
+
+    return 0
+
+}
+
+function bridge_addon_mprun_spmd_post_run {
+
+    return 0
+
+}
+#################################################################################

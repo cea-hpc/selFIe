@@ -38,7 +38,7 @@
 /// \brief List of environment variables at runtime
 #define ENVVARS_RUNTIME                                                        \
   {                                                                            \
-    "SELFIE_LOG"                                                               \
+    "SELFIE_LOG", "SELFIE_OUTPUTFILE"                                          \
   }
 
 /// \brief For library compatibility
@@ -80,6 +80,8 @@ typedef struct Params_in
   int enable;
   /// \brief Print log
   int log_print;
+  /// \brief Print output file
+  char *outputfile;
 } params_in;
 
 /// \typedef params_out
