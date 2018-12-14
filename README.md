@@ -18,6 +18,17 @@ selFIe can be compiled to profile other features:
 * MPI calls (Only C API)
 * [PAPI](http://icl.cs.utk.edu/papi/overview/) hardware counters 
 
+## Download
+
+Official release can be downloaded in the [release page](https://github.com/cea-hpc/selFIe/releases).
+
+To use development version:
+```
+$ git clone https://github.com/cea-hpc/selFIe.git
+$ cd selFIe
+$ ./autogen.sh
+```
+
 ## Installation
 
 ### Prerequisites
