@@ -25,7 +25,7 @@ AC_LANG([C])
 AM_PATH_PYTHON([2.6])
 
 # Checks for programs.
-AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC([gcc cc])
 AC_PROG_CXX([g++ c++])
 AC_LANG_PUSH(C)
