@@ -5,11 +5,11 @@
 
 %define  debug_package %{nil}
 # Put this package in SOURCES directory
-%define  _papi_version 5.6.0
+%define  _papi_version 5.7.0
 
 Name:           selfie
-Version:        1.0.2b0
-Release:        2%{?dist}
+Version:        1.0.2
+Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine
 
 License:        GPL License
@@ -63,6 +63,11 @@ rm -rf %{_buildrootdir}/*
 %{_prefix}
 
 %changelog
+* Tue Mar 21 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.0.2 release 
+- Correction to get outputfilename
+- Update PAPI version to 5.7.0
+
 * Tue Jul 31 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.2b0 release 2
 - Correction to get outputfilename

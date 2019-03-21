@@ -1,7 +1,7 @@
 %define  debug_package %{nil}
 
 Name:           selfie
-Version:        1.0.2b0
+Version:        1.0.2
 Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine
 
@@ -40,6 +40,11 @@ rm -rf %{_buildrootdir}/*
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 
 %changelog
+* Tue Mar 21 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.0.2 release
+- Add output file feature
+- Update specfile for RHEL7/CentOS7
+
 * Tue Jul 24 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.2b0 release
 - Add output file feature
