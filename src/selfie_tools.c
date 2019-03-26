@@ -796,7 +796,7 @@ int selfie_write_outputfile(char *filename, char *outlog)
 {
   FILE *f_output = NULL;
 
-  f_output = fopen(filename, "a");
+  f_output = fopen(filename, "a+");
   if (f_output != NULL)
   {
     (void)fprintf(f_output, "%s\n", outlog);
