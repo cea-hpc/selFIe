@@ -38,7 +38,9 @@
 /// \brief List of environment variables at runtime
 #define ENVVARS_RUNTIME                                                        \
   {                                                                            \
-    "SELFIE_LOG", "SELFIE_OUTPUTFILE"                                          \
+    "SELFIE_LOG",                                                              \
+    "SELFIE_OUTPUTFILE",                                                       \
+    "SELFIE_OUTPUTDIR"                                                         \
   }
 
 /// \brief For library compatibility
