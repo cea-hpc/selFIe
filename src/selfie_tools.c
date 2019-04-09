@@ -30,6 +30,7 @@
 #include <syslog.h>
 #include <regex.h>
 #include <unistd.h>
+#include <libgen.h>
 
 // Timer
 
@@ -694,6 +695,8 @@ int selfie_read_env_vars(params_in *in)
 {
   char *list[] = ENVVARS_RUNTIME;
   char *tmp_string = NULL;
+  char *filename = NULL;
+  pid_t currentpid = 0;
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
@@ -704,6 +707,7 @@ int selfie_read_env_vars(params_in *in)
     in->log_print = atoi(tmp_string);
   }
   // get output file
+  in->outputfile = NULL;
   tmp_string = getenv(list[1]);
   if (tmp_string != NULL)
   {
@@ -711,7 +715,19 @@ int selfie_read_env_vars(params_in *in)
   }
   else
   {
-    in->outputfile = NULL;
+    tmp_string = getenv(list[2]);
+    if(tmp_string != NULL)
+    {
+      filename = (char*) malloc(2048*sizeof(char));
+      if(filename != NULL)
+      {
+	currentpid = getpid();
+	if(sprintf(filename, "%s/selfie_%d.out", tmp_string, currentpid) > 0)
+	{
+	  in->outputfile = filename;
+	}
+      }
+    }
   }
   return EXIT_SUCCESS;
 };
@@ -795,12 +811,34 @@ int selfie_check_exclude(params_in *in)
 int selfie_write_outputfile(char *filename, char *outlog)
 {
   FILE *f_output = NULL;
-
-  f_output = fopen(filename, "a+");
-  if (f_output != NULL)
+  char *tmpfilename = NULL;
+  char *directory = NULL;
+  struct stat sb;
+  
+  tmpfilename = strdup(filename);
+#ifdef HAVE_DEBUG
+  printf("selfie_output: %s\n", tmpfilename);
+#endif
+  if(tmpfilename != NULL)
   {
-    (void)fprintf(f_output, "%s\n", outlog);
-    (void)fclose(f_output);
+    directory = dirname(tmpfilename);
+#ifdef HAVE_DEBUG
+    printf("selfie_output directory: %s\n", directory);
+#endif
+    if (!(stat(directory, &sb) == 0 && S_ISDIR(sb.st_mode)))
+    {
+      if(mkdir(directory, 0700) != 0)
+      {
+	return EXIT_SUCCESS;
+      }
+    }
+    f_output = fopen(filename, "a+");
+    if (f_output != NULL)
+    {
+      (void)fprintf(f_output, "%s\n", outlog);
+      (void)fclose(f_output);
+    }
+    free(tmpfilename);
   }
 
   return EXIT_SUCCESS;
