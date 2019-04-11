@@ -239,7 +239,6 @@ def print_selfie_h_function_builtin(idx,
 ///
 {1} {0}(...)
 {{
-    double f_start = 0.0;
     int ap_except = 0;
     {3}
 
@@ -341,7 +340,6 @@ def print_selfie_h_function_hook(idx,
 ///
 {1} {0}({2})
 {{
-    double f_start = 0.0;
     {3}
 
     orig_{0}_f_type selfie_function = NULL;
