@@ -11,6 +11,8 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS += -I$(top_srcdir)/include
 AM_CPPFLAGS += -DCONFIGFILEPATH=\"${sysconfdir}\"
 AM_CPPFLAGS += -DCONFIGFILENAME=\"${CONFIGFILENAME}\"
+AM_CFLAGS += -Wall
+AM_CXXFLAGS += -Wall
 
 noinst_SCRIPTS = parse_posixio.py parse_mpi.py
 CLEANFILES = selfie_posixio_functions.h selfie_mpi_functions.h selfie_mpiio_functions.h
