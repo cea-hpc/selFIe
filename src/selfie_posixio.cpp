@@ -79,14 +79,10 @@ int selfie_plugin_posixio_pre()
 int selfie_plugin_posixio_init(params_in *in, params_out *out)
 {
   int i = 0;
-  int enable = 1;
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
-  enable = selfie_getenv("SELFIE_NOPOSIXIO");
-
-  if (in->enable == 0)
-    enable = 0;
+  //int enable = selfie_getenv("SELFIE_NOPOSIXIO");
 
   for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
   {

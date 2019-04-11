@@ -112,7 +112,6 @@ char *selfie_get_event_name(int index)
 int selfie_plugin_papi_init_lib(void)
 {
   int flag = 1;
-  int dlopen_flag = 0;
   char library_path[MAX_PAPILIBPATH] = "";
   struct stat st;
   char *tmp_string = NULL;
