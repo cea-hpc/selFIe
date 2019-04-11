@@ -139,14 +139,11 @@ int selfie_plugin_mpi_pre()
 int selfie_plugin_mpi_init(params_in *in, params_out *out)
 {
   int i = 0;
-  int enable = 1;
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
 
-  enable = selfie_getenv("SELFIE_NOMPI");
-  if (in->enable == 0)
-    enable = 0;
+  //int enable = selfie_getenv("SELFIE_NOMPI");
 
   for (i = 0; i < N_MPI_FUNCTIONS; i++)
   {
