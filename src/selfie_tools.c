@@ -905,7 +905,7 @@ int selfie_write_log(params_in *in, params_out *out)
     {
       openlog("selfie", LOG_PID | LOG_NDELAY, LOG_USER);
     }
-    syslog(LOG_INFO, json_string);
+    syslog(LOG_INFO, "%s", json_string);
     closelog();
 
     // Outputfile
