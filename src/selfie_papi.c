@@ -71,6 +71,7 @@ typedef struct Papi_plugin_global_data
   int (*PAPI_stop)(int, long long *);
   int (*PAPI_cleanup_eventset)(int);
   int (*PAPI_destroy_eventset)(int *);
+  const PAPI_hw_info_t *(*PAPI_get_hardware_info)(void);
 } papi_plugin_global_data;
 
 papi_plugin_global_data selfie_papi_global_data;
@@ -200,6 +201,12 @@ int selfie_plugin_papi_init_lib(void)
 	{
 	  flag = 0;
 	};
+	if ((selfie_papi_global_data.PAPI_get_hardware_info =
+	     (const PAPI_hw_info_t * (*)(void))dlsym(selfie_papi_global_data.papi_handle,
+				       "PAPI_get_hardware_info")) == NULL)
+	{
+	  flag = 0;
+	};
 	if (flag == 0)
 	{
 	  dlclose(selfie_papi_global_data.papi_handle);
@@ -304,6 +311,8 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
   int papi_print = 0;
   char *tmp_string = NULL;
   char output[OUTPUT_ROWMAX] = "";
+  const PAPI_hw_info_t *hwinfo = NULL;
+  
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
@@ -320,11 +329,19 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
       return EXIT_FAILURE;
     }
 
+    // Get hardware information
+    if((hwinfo = selfie_papi_global_data.PAPI_get_hardware_info()) != NULL)
+    {
+      selfie_json_int_to_log(out,"papi_cpuvid", hwinfo->vendor);
+      selfie_json_int_to_log(out,"papi_cpumid", hwinfo->model);
+    }
+
     // Clean PAPI
     selfie_papi_global_data.PAPI_cleanup_eventset(
 	selfie_papi_global_data.event_set);
     selfie_papi_global_data.PAPI_destroy_eventset(
 	&(selfie_papi_global_data.event_set));
+
     dlclose(selfie_papi_global_data.papi_handle);
 #ifdef HAVE_DEBUG
     // Print
