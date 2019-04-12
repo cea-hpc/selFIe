@@ -9,6 +9,7 @@
 ///
 #include "config.h"
 #include <unistd.h>
+#include <limits.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -79,16 +80,19 @@ int selfie_plugin_default_finalize(params_in *in, params_out *out)
   double maxmem = 0.0;
   double utime = 0.0;
   double stime = 0.0;
+  char hostname[HOST_NAME_MAX + 1];
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
 
   out->wtime = selfie_mysecond() - selfie_default_global_data.start;
   selfie_get_rusage(&maxmem, &utime, &stime);
+  gethostname(hostname, HOST_NAME_MAX + 1);
 
   selfie_json_double_to_log(out, "utime", utime);
   selfie_json_double_to_log(out, "stime", stime);
   selfie_json_double_to_log(out, "maxmem", maxmem);
+  selfie_json_string_to_log(out, "hostname", hostname);
 
   return EXIT_SUCCESS;
 };
