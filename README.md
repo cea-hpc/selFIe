@@ -1,6 +1,7 @@
 # selFIe                                                                        
 
 [![Build Status](https://travis-ci.org/cea-hpc/selFIe.svg?branch=master)](https://travis-ci.org/cea-hpc/selFIe)
+[![Build Status](https://travis-ci.org/cea-hpc/selFIe.svg?branch=dev)](https://travis-ci.org/cea-hpc/selFIe)
 
 **selFIe** (SElf and Light proFIling Engine) is a tool to lightly profile Linux commands without compiling.
 
