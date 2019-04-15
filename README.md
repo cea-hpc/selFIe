@@ -110,6 +110,16 @@ $ cat $SELFIE_OUTPUTFILE
 { "utime": 0.00, "stime": 0.01, "maxmem": 0.00, "posixio_time": 0.00, "posixio_count": 7569, "USER": "user", "timestamp": 1500000, "wtime": 0.01, "command": "/bin/hostname" }
 ```
 
+Using selFIe in a MPI job may result bad written output file. Then you can can use a directory for storing selFIe output. selFIe will choose a file name for each processes:
+
+```
+$ export SELFIE_OUTPUTDIR=${HOME}/selfie_outdir
+$ LD_PRELOAD=selfie.so hostname
+$ cat $SELFIE_OUTPUTDIR/*
+{ "utime": 0.00, "stime": 0.01, "maxmem": 0.00, "posixio_time": 0.00, "posixio_count": 7569, "USER": "user", "timestamp": 1500000, "wtime": 0.01, "command": "/bin/hostname" }
+...
+```
+
 ## Contributing
 ## Authors
 See the list of [AUTHORS](AUTHORS) who participated in this project.
@@ -131,7 +141,7 @@ selFIe is based on two features:
 
 ## License
 
-Copyright 2015-2018 CEA/DAM/DIF<br />
+Copyright 2015-2019 CEA/DAM/DIF<br />
 <br />
 selFIe is distributed under the CeCILL-C. See the included files <br />
 Licence_CeCILL-C_V1-en.txt (English version) and <br />

@@ -1,7 +1,7 @@
 %define  debug_package %{nil}
 
 Name:           selfie
-Version:        1.0.2
+Version:        1.0.3
 Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine
 
@@ -40,6 +40,12 @@ rm -rf %{_buildrootdir}/*
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 
 %changelog
+* Mon Apr 15 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.0.3 release
+- Add feature for writing logs in a different files in a directory
+- Add feature to get more informations with PAPI
+- Correction with -Wall compilation option
+
 * Tue Mar 21 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.2 release
 - Add output file feature
