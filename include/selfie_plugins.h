@@ -39,6 +39,9 @@ extern plugins_functions selfie_plugin_papi;
 extern plugins_functions selfie_plugin_mpi;
 extern plugins_functions selfie_plugin_mpiio;
 #endif
+#ifdef HAVE_OMP
+extern plugins_functions selfie_plugin_omp;
+#endif
 // ADD NEW PLUGIN BEFORE THIS LINE
 
 /// \brief Arrays of plugins_functions (GLOBAL)
@@ -58,6 +61,9 @@ plugins_functions *selfie_plugins[] = {
 #ifdef HAVE_MPI
     &selfie_plugin_mpi,
     &selfie_plugin_mpiio,
+#endif
+#ifdef HAVE_OMP
+  &selfie_plugin_omp,
 #endif
     NULL};
 

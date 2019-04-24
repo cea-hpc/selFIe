@@ -31,4 +31,4 @@ addons:
  
 install: true
 
-script: ./autogen.sh && ./configure --prefix=${HOME}/selfie CC=${CC_FOR_BUILD} CXX=${CXX_FOR_BUILD} --with-mpi --with-papi --with-posixio --with-yaml && make && make install
+script: ./autogen.sh && ./configure --prefix=${HOME}/selfie CC=${CC_FOR_BUILD} CXX=${CXX_FOR_BUILD} --with-mpi --with-papi --with-posixio --with-yaml --with-omp && make && make install

@@ -174,6 +174,19 @@ AC_ARG_WITH([papi],
     [LIBPAPIPATHSET=1],
     [LIBPAPIPATHSET=0])
 
+# Check for OMP
+
+AC_ARG_WITH([omp],
+    [AS_HELP_STRING([--with-omp],
+        [Enable OMP profiling])],
+    [ENABLEOMP=1],
+    [ENABLEOMP=0])
+
+if test $ENABLEOMP = 1; then
+   AC_DEFINE([HAVE_OMP],[],[Enable OMP profiling])
+fi
+
+
 OLD_AM_CXXFLAGS="$AM_CXXFLAGS"
 OLD_AM_CPPFLAGS="$AM_CPPFLAGS"
 OLD_AM_CFLAGS="$AM_CFLAGS"

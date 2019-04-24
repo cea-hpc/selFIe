@@ -3,6 +3,7 @@ selfie_la_SOURCES = selfie.c selfie_tools.c \
 	selfie_dummy.c \
 	selfie_default.c \
 	selfie_papi.c \
+	selfie_omp.cpp \
 	selfie_posixio.cpp \
 	selfie_mpi.cpp \
 	selfie_mpiio.cpp
@@ -26,6 +27,8 @@ selfie_dummy.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfi
 selfie_default.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_default.h
 
 selfie_papi.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_papi.h
+
+selfie_omp.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_omp.h
 
 selfie_posixio.lo: selfie_posixio_functions.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_posixio.h
 
