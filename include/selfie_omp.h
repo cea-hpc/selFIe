@@ -1,3 +1,15 @@
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Adrien Cotte <adrien@cotte.com>
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
+//
+// This file is part of SelFIe.
+//
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can  use,
+// modify and/ or redistribute the software under the terms of the CeCILL-C
+// license as circulated by CEA, CNRS and INRIA at the following URL
+// "http://www.cecill.info".
+
 ///
 /// @file   selfie_omp.h
 /// @author COTTE Adrien <adrien@cotte.com>
