@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -24,25 +24,26 @@
 #include "selfie.h"
 #include "selfie_tools.h"
 
-extern "C" {
+extern "C"
+{
 
-/// \brief      preInitialize plugin
-/// \return     exit code
-int selfie_plugin_mpiio_pre();
+  /// \brief      preInitialize plugin
+  /// \return     exit code
+  int selfie_plugin_mpiio_pre();
 
-/// \brief      Initialize plugin
-/// \param[in]  in  Input parameter for plugin
-/// \param[out] out Output parameter for plugin
-/// \return     exit code
-int selfie_plugin_mpiio_init(params_in *in, params_out *out);
+  /// \brief      Initialize plugin
+  /// \param[in]  in  Input parameter for plugin
+  /// \param[out] out Output parameter for plugin
+  /// \return     exit code
+  int selfie_plugin_mpiio_init(params_in *in, params_out *out);
 
-/// \brief      Finalize plugin
-/// \param[in]  in  Input parameter for plugin
-/// \param[out] out Output parameter for plugin
-/// \return     exit code
-int selfie_plugin_mpiio_finalize(params_in *in, params_out *out);
+  /// \brief      Finalize plugin
+  /// \param[in]  in  Input parameter for plugin
+  /// \param[out] out Output parameter for plugin
+  /// \return     exit code
+  int selfie_plugin_mpiio_finalize(params_in *in, params_out *out);
 
-/// \brief structure for plugin mpi
-extern plugins_functions selfie_plugin_mpiio;
+  /// \brief structure for plugin mpi
+  extern plugins_functions selfie_plugin_mpiio;
 }
 #endif

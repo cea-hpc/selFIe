@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -104,8 +104,7 @@ char *selfie_get_event(int index)
 char *selfie_get_event_name(int index)
 {
   char *list_events_name[PAPINUMEVENT] = {"total_cycle", "total_instructions",
-					  "llc_traffic"
-  };
+					  "llc_traffic"};
   return strdup(list_events_name[index]);
 }
 
@@ -202,8 +201,9 @@ int selfie_plugin_papi_init_lib(void)
 	  flag = 0;
 	};
 	if ((selfie_papi_global_data.PAPI_get_hardware_info =
-	     (const PAPI_hw_info_t * (*)(void))dlsym(selfie_papi_global_data.papi_handle,
-				       "PAPI_get_hardware_info")) == NULL)
+		 (const PAPI_hw_info_t *(*)(void))dlsym(
+		     selfie_papi_global_data.papi_handle,
+		     "PAPI_get_hardware_info")) == NULL)
 	{
 	  flag = 0;
 	};
@@ -312,7 +312,7 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
   char *tmp_string = NULL;
   char output[OUTPUT_ROWMAX] = "";
   const PAPI_hw_info_t *hwinfo = NULL;
-  
+
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
@@ -330,10 +330,10 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
     }
 
     // Get hardware information
-    if((hwinfo = selfie_papi_global_data.PAPI_get_hardware_info()) != NULL)
+    if ((hwinfo = selfie_papi_global_data.PAPI_get_hardware_info()) != NULL)
     {
-      selfie_json_int_to_log(out,"papi_cpuvid", hwinfo->vendor);
-      selfie_json_int_to_log(out,"papi_cpumid", hwinfo->model);
+      selfie_json_int_to_log(out, "papi_cpuvid", hwinfo->vendor);
+      selfie_json_int_to_log(out, "papi_cpumid", hwinfo->model);
     }
 
     // Clean PAPI
@@ -371,7 +371,7 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
       selfie_json_double_to_log(out, "papi_ipc", 0.0);
     }
     // Average Memory bandwidth = OFFCORE_RESPONSE_0:ANY_DATA:ANY_RESPONSE * 64
-    //                            / Wall time  
+    //                            / Wall time
     if (out->wtime > 0.0)
     {
       selfie_json_double_to_log(out, "papi_mem_bw",
