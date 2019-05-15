@@ -816,16 +816,14 @@ int selfie_write_outputfile(char *filename, char *outlog)
   char *directory = NULL;
   struct stat sb;
 
-  tmpfilename = strdup(filename);
 #ifdef HAVE_DEBUG
-  printf("selfie_output: %s\n", tmpfilename);
+  PINFO("");
 #endif
+
+  tmpfilename = strdup(filename);
   if (tmpfilename != NULL)
   {
     directory = dirname(tmpfilename);
-#ifdef HAVE_DEBUG
-    printf("selfie_output directory: %s\n", directory);
-#endif
     if (!(stat(directory, &sb) == 0 && S_ISDIR(sb.st_mode)))
     {
       if (mkdir(directory, 0700) != 0)
@@ -833,6 +831,10 @@ int selfie_write_outputfile(char *filename, char *outlog)
 	return EXIT_SUCCESS;
       }
     }
+#ifdef HAVE_DEBUG
+    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__, tmpfilename);
+#endif
+  
     f_output = fopen(filename, "a+");
     if (f_output != NULL)
     {
