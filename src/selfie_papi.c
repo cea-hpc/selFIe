@@ -143,6 +143,9 @@ int selfie_plugin_papi_init_lib(void)
 
     if (!stat(library_path, &st))
     {
+#ifdef HAVE_DEBUG
+      fprintf(stderr, "[selfie] - %s - PAPI LIB to be used: %s \n", __func__, library_path);
+#endif
       selfie_papi_global_data.papi_handle =
 	  dlopen(library_path, RTLD_NOW | RTLD_LOCAL);
       if (selfie_papi_global_data.papi_handle != NULL)
@@ -209,17 +212,26 @@ int selfie_plugin_papi_init_lib(void)
 	};
 	if (flag == 0)
 	{
+#ifdef HAVE_DEBUG
+      fprintf(stderr, "[selfie] - %s - Cannot find needed symbols in PAPI library\n", __func__);
+#endif
 	  dlclose(selfie_papi_global_data.papi_handle);
 	}
       }
       else
       {
+#ifdef HAVE_DEBUG
+	fprintf(stderr, "[selfie] - %s - Cannot dlopen PAPI library %s \n", __func__, library_path);
+#endif
 	flag = 0;
       }
       dlerror();
     }
     else
     {
+#ifdef HAVE_DEBUG
+      fprintf(stderr, "[selfie] - %s - Cannot find PAPI library in %s \n", __func__, library_path);
+#endif
       flag = 0;
     }
   }
@@ -348,7 +360,7 @@ int selfie_plugin_papi_finalize(params_in *in, params_out *out)
     for (i = 0; i < PAPINUMEVENT; i++)
     {
       char *tmp = selfie_get_event_name(i);
-      printf("%s : %lu\n", tmp, values[i]);
+      printf("[selfie] - %s - %s : %lld\n", __func__, tmp, values[i]);
       free(tmp);
     }
 #endif
