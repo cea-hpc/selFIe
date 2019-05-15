@@ -48,12 +48,18 @@
 
 #include <stdlib.h>
 
+#ifdef HAVE_DEBUG
+typedef struct _IO_FILE FILE;
+extern FILE *stderr;
+extern int fprintf(FILE *stream, const char *format, ...);
+
 /// \def     PINFO
 /// \brief   Print information message for function
 ///
 /// \details
 ///
 #define PINFO(s) fprintf(stderr, "%s - %s - %s\n", "[selfie]", __func__, s)
+#endif
 
 /// \typedef params_in
 /// \brief   params_in of struct Params_in
