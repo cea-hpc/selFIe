@@ -5,7 +5,7 @@
 
 %define  debug_package %{nil}
 # Put this package in SOURCES directory
-%define  _papi_version 5.7.0
+%define  _papi_version 6.0.0
 
 Name:           selfie
 Version:        1.0.4
