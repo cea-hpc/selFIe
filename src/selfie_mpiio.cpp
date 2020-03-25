@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -23,7 +23,8 @@
 
 #include <cstdio>
 
-extern "C" {
+extern "C"
+{
 #include "selfie_tools.h"
 #include "selfie_mpiio.h"
 }
@@ -120,115 +121,116 @@ int selfie_mpiio_get_version(float *mpiio_version, char mpiio_libversion[])
   return return_value;
 }
 
-extern "C" {
-
-/// \details   preInitialize here all variables for plugin
-int selfie_plugin_mpiio_pre()
+extern "C"
 {
-  int i = 0;
-  for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
+
+  /// \details   preInitialize here all variables for plugin
+  int selfie_plugin_mpiio_pre()
   {
-    char *tmp = selfie_get_mpiio_function_name(N_MPIIO_FUNCTIONS + i);
-    selfie_mpiio_orig_pointer_functions[i] =
-	(function_type)dlsym(RTLD_NEXT, tmp);
-    free(tmp);
-  }
-  return EXIT_SUCCESS;
-};
-
-/// \details   Initialize here all variables for plugin
-int selfie_plugin_mpiio_init(params_in *in, params_out *out)
-{
-  int i = 0;
-#ifdef HAVE_DEBUG
-  PINFO("");
-#endif
-
-  //int enable = selfie_getenv("SELFIE_NOMPIIO");
-
-  for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
-  {
-    selfie_mpiio_global_data[i].function_count = (unsigned long long int)0;
-    selfie_mpiio_global_data[i].function_time = 0.0;
-    selfie_mpiio_global_data[i].function_size = 0.0;
-  }
-  selfie_mpiio_global_nproc_rank.rank = 0;
-  selfie_mpiio_global_nproc_rank.nproc = 1;
-
-  return EXIT_SUCCESS;
-};
-
-/// \details   Release here all variables for plugin
-int selfie_plugin_mpiio_finalize(params_in *in, params_out *out)
-{
-  int i = 0;
-  double mpiio_wtime = 0.0;
-  unsigned long long int mpiio_count = (unsigned long long int)0;
-  float mpiio_version = 0.0;
-  char mpiio_libversion[32] = "";
-  double mpiio_size = 0.0;
-  int mpiio_print = 0;
-  char *tmp_string = NULL;
-  char output[OUTPUT_ROWMAX] = "";
-#ifdef HAVE_DEBUG
-  PINFO("");
-#endif
-  if (in->enable != 0)
-  {
+    int i = 0;
     for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
     {
-      mpiio_wtime += selfie_mpiio_global_data[i].function_time;
-      mpiio_count += selfie_mpiio_global_data[i].function_count;
-      mpiio_size += selfie_mpiio_global_data[i].function_size;
+      char *tmp = selfie_get_mpiio_function_name(N_MPIIO_FUNCTIONS + i);
+      selfie_mpiio_orig_pointer_functions[i] =
+	  (function_type)dlsym(RTLD_NEXT, tmp);
+      free(tmp);
     }
+    return EXIT_SUCCESS;
+  };
 
-    selfie_json_double_to_log(out, "mpiio_time", mpiio_wtime);
-    selfie_json_llu_to_log(out, "mpiio_count", mpiio_count);
-    // selfie_json_int_to_log(out,"mpiio_rank",
-    // 				   selfie_mpiio_global_nproc_rank.rank);
-    // selfie_json_int_to_log(out,"mpiio_nproc",
-    // 				   selfie_mpiio_global_nproc_rank.nproc);
-    if (selfie_mpiio_get_version(&mpiio_version, mpiio_libversion) ==
-	EXIT_SUCCESS)
-    {
-      selfie_json_double_to_log(out, "mpiio_version", (double)mpiio_version);
-      if (strlen(mpiio_libversion) > 0)
-      {
-	selfie_json_string_to_log(out, "mpiio_libversion", mpiio_libversion);
-      }
-    }
-  }
-  mpiio_print = !selfie_getenv("SELFIE_MPIIO_PRINT");
-  output[OUTPUT_ROWMAX - 1] = '\0';
-  if (mpiio_print != 0)
+  /// \details   Initialize here all variables for plugin
+  int selfie_plugin_mpiio_init(params_in *in, params_out *out)
   {
-    snprintf(output, OUTPUT_ROWMAX - 1, "\n=== SELFIE MPIIO DETAILS ===\n\n");
-    selfie_strcat_output_to_params_out(out, output);
-    snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12s\t%12s\n\n", "Function",
-	     "Count", "Time");
-    selfie_strcat_output_to_params_out(out, output);
+    int i = 0;
+#ifdef HAVE_DEBUG
+    PINFO("");
+#endif
+
+    // int enable = selfie_getenv("SELFIE_NOMPIIO");
+
     for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
     {
-      if (selfie_mpiio_global_data[i].function_count > 0)
+      selfie_mpiio_global_data[i].function_count = (unsigned long long int)0;
+      selfie_mpiio_global_data[i].function_time = 0.0;
+      selfie_mpiio_global_data[i].function_size = 0.0;
+    }
+    selfie_mpiio_global_nproc_rank.rank = 0;
+    selfie_mpiio_global_nproc_rank.nproc = 1;
+
+    return EXIT_SUCCESS;
+  };
+
+  /// \details   Release here all variables for plugin
+  int selfie_plugin_mpiio_finalize(params_in *in, params_out *out)
+  {
+    int i = 0;
+    double mpiio_wtime = 0.0;
+    unsigned long long int mpiio_count = (unsigned long long int)0;
+    float mpiio_version = 0.0;
+    char mpiio_libversion[32] = "";
+    double mpiio_size = 0.0;
+    int mpiio_print = 0;
+    char *tmp_string = NULL;
+    char output[OUTPUT_ROWMAX] = "";
+#ifdef HAVE_DEBUG
+    PINFO("");
+#endif
+    if (in->enable != 0)
+    {
+      for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
       {
-	tmp_string = selfie_get_mpiio_function_name(i);
-	snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12llu\t%10.2lf\n",
-		 tmp_string, selfie_mpiio_global_data[i].function_count,
-		 selfie_mpiio_global_data[i].function_time);
-	selfie_strcat_output_to_params_out(out, output);
-	free(tmp_string);
+	mpiio_wtime += selfie_mpiio_global_data[i].function_time;
+	mpiio_count += selfie_mpiio_global_data[i].function_count;
+	mpiio_size += selfie_mpiio_global_data[i].function_size;
+      }
+
+      selfie_json_double_to_log(out, "mpiio_time", mpiio_wtime);
+      selfie_json_llu_to_log(out, "mpiio_count", mpiio_count);
+      // selfie_json_int_to_log(out,"mpiio_rank",
+      // 				   selfie_mpiio_global_nproc_rank.rank);
+      // selfie_json_int_to_log(out,"mpiio_nproc",
+      // 				   selfie_mpiio_global_nproc_rank.nproc);
+      if (selfie_mpiio_get_version(&mpiio_version, mpiio_libversion) ==
+	  EXIT_SUCCESS)
+      {
+	selfie_json_double_to_log(out, "mpiio_version", (double)mpiio_version);
+	if (strlen(mpiio_libversion) > 0)
+	{
+	  selfie_json_string_to_log(out, "mpiio_libversion", mpiio_libversion);
+	}
       }
     }
-    snprintf(output, OUTPUT_ROWMAX - 1, "\n");
-    selfie_strcat_output_to_params_out(out, output);
-  }
+    mpiio_print = !selfie_getenv("SELFIE_MPIIO_PRINT");
+    output[OUTPUT_ROWMAX - 1] = '\0';
+    if (mpiio_print != 0)
+    {
+      snprintf(output, OUTPUT_ROWMAX - 1, "\n=== SELFIE MPIIO DETAILS ===\n\n");
+      selfie_strcat_output_to_params_out(out, output);
+      snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12s\t%12s\n\n", "Function",
+	       "Count", "Time");
+      selfie_strcat_output_to_params_out(out, output);
+      for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
+      {
+	if (selfie_mpiio_global_data[i].function_count > 0)
+	{
+	  tmp_string = selfie_get_mpiio_function_name(i);
+	  snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12llu\t%10.2lf\n",
+		   tmp_string, selfie_mpiio_global_data[i].function_count,
+		   selfie_mpiio_global_data[i].function_time);
+	  selfie_strcat_output_to_params_out(out, output);
+	  free(tmp_string);
+	}
+      }
+      snprintf(output, OUTPUT_ROWMAX - 1, "\n");
+      selfie_strcat_output_to_params_out(out, output);
+    }
 
-  return EXIT_SUCCESS;
-};
+    return EXIT_SUCCESS;
+  };
 
-/// \brief structure for plugin mpiio
-plugins_functions selfie_plugin_mpiio = {selfie_plugin_mpiio_pre,
-					 selfie_plugin_mpiio_init,
-					 selfie_plugin_mpiio_finalize};
+  /// \brief structure for plugin mpiio
+  plugins_functions selfie_plugin_mpiio = {selfie_plugin_mpiio_pre,
+					   selfie_plugin_mpiio_init,
+					   selfie_plugin_mpiio_finalize};
 }
 #endif

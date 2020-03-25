@@ -18,12 +18,14 @@
 ///
 ///
 ///
-extern "C" {
+extern "C"
+{
 #include "config.h"
 #ifdef HAVE_POSIXIO
 }
 
-extern "C" {
+extern "C"
+{
 #include "selfie_tools.h"
 #include "selfie_posixio.h"
 }
@@ -45,10 +47,11 @@ typedef struct Posixio_plugin_global_data
 extern posixio_plugin_global_data selfie_posixio_global_data[];
 
 #ifdef __SELFIE_POSIXIO_BUILTIN__
-extern "C" {
-typedef struct _IO_FILE FILE;
-extern FILE *stderr;
-extern int snprintf(char *str, size_t size, const char *format, ...);
+extern "C"
+{
+  typedef struct _IO_FILE FILE;
+  extern FILE *stderr;
+  extern int snprintf(char *str, size_t size, const char *format, ...);
 }
 #endif
 
@@ -61,104 +64,107 @@ extern int snprintf(char *str, size_t size, const char *format, ...);
 /// \brief posixio plugin data (GLOBAL)
 posixio_plugin_global_data selfie_posixio_global_data[N_POSIXIO_FUNCTIONS];
 
-extern "C" {
-/// \details   preInitialize here all variables for plugin
-int selfie_plugin_posixio_pre()
+extern "C"
 {
-  int i = 0;
-  for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
+  /// \details   preInitialize here all variables for plugin
+  int selfie_plugin_posixio_pre()
   {
-    char *tmp = selfie_get_posixio_function_name(i);
-    selfie_orig_pointer_functions[i] = dlsym(RTLD_NEXT, tmp);
-    free(tmp);
-  }
-  return EXIT_SUCCESS;
-};
-
-/// \details   Initialize here all variables for plugin
-int selfie_plugin_posixio_init(params_in *in, params_out *out)
-{
-  int i = 0;
-#ifdef HAVE_DEBUG
-  PINFO("");
-#endif
-  //int enable = selfie_getenv("SELFIE_NOPOSIXIO");
-
-  for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
-  {
-    selfie_posixio_global_data[i].function_count = (unsigned long long int)0;
-    selfie_posixio_global_data[i].function_time = 0.0;
-    selfie_posixio_global_data[i].function_size = 0.0;
-  }
-  if (in->enable == 1)
-  {
-    selfie_pointer_functions = selfie_new_pointer_functions;
-  }
-
-  return EXIT_SUCCESS;
-};
-
-/// \details   Release here all variables for plugin
-int selfie_plugin_posixio_finalize(params_in *in, params_out *out)
-{
-  int i = 0;
-  double posixio_wtime = 0.0;
-  unsigned long long int posixio_count = (unsigned long long int)0;
-  int posixio_print = 0;
-  char *tmp_string = NULL;
-  char output[OUTPUT_ROWMAX] = "";
-#ifdef HAVE_DEBUG
-  PINFO("");
-#endif
-
-  // Stop IO profiling
-  selfie_pointer_functions = selfie_orig_pointer_functions;
-
-  if (in->enable == 1)
-  {
+    int i = 0;
     for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
     {
-      posixio_wtime += selfie_posixio_global_data[i].function_time;
-      posixio_count += selfie_posixio_global_data[i].function_count;
+      char *tmp = selfie_get_posixio_function_name(i);
+      selfie_orig_pointer_functions[i] = dlsym(RTLD_NEXT, tmp);
+      free(tmp);
+    }
+    return EXIT_SUCCESS;
+  };
+
+  /// \details   Initialize here all variables for plugin
+  int selfie_plugin_posixio_init(params_in *in, params_out *out)
+  {
+    int i = 0;
+#ifdef HAVE_DEBUG
+    PINFO("");
+#endif
+    // int enable = selfie_getenv("SELFIE_NOPOSIXIO");
+
+    for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
+    {
+      selfie_posixio_global_data[i].function_count = (unsigned long long int)0;
+      selfie_posixio_global_data[i].function_time = 0.0;
+      selfie_posixio_global_data[i].function_size = 0.0;
+    }
+    if (in->enable == 1)
+    {
+      selfie_pointer_functions = selfie_new_pointer_functions;
     }
 
-    selfie_json_double_to_log(out, "posixio_time", posixio_wtime);
-    selfie_json_llu_to_log(out, "posixio_count", posixio_count);
-  }
+    return EXIT_SUCCESS;
+  };
 
-  posixio_print = !selfie_getenv("SELFIE_POSIXIO_PRINT");
-  output[OUTPUT_ROWMAX - 1] = '\0';
-  if (posixio_print != 0)
+  /// \details   Release here all variables for plugin
+  int selfie_plugin_posixio_finalize(params_in *in, params_out *out)
   {
-    snprintf(output, OUTPUT_ROWMAX - 1, "\n=== SELFIE POSIXIO DETAILS ===\n\n");
-    selfie_strcat_output_to_params_out(out, output);
-    snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12s\t%12s\n\n", "Function",
-	     "Count", "Time");
-    selfie_strcat_output_to_params_out(out, output);
-    for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
+    int i = 0;
+    double posixio_wtime = 0.0;
+    unsigned long long int posixio_count = (unsigned long long int)0;
+    int posixio_print = 0;
+    char *tmp_string = NULL;
+    char output[OUTPUT_ROWMAX] = "";
+#ifdef HAVE_DEBUG
+    PINFO("");
+#endif
+
+    // Stop IO profiling
+    selfie_pointer_functions = selfie_orig_pointer_functions;
+
+    if (in->enable == 1)
     {
-      if (selfie_posixio_global_data[i].function_count > 0)
+      for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
       {
-	tmp_string = selfie_get_posixio_function_name(i);
-	snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12llu\t%10.2lf\n",
-		 tmp_string, selfie_posixio_global_data[i].function_count,
-		 selfie_posixio_global_data[i].function_time);
-	selfie_strcat_output_to_params_out(out, output);
-	free(tmp_string);
+	posixio_wtime += selfie_posixio_global_data[i].function_time;
+	posixio_count += selfie_posixio_global_data[i].function_count;
       }
+
+      selfie_json_double_to_log(out, "posixio_time", posixio_wtime);
+      selfie_json_llu_to_log(out, "posixio_count", posixio_count);
     }
-    snprintf(output, OUTPUT_ROWMAX - 1, "\n");
-    selfie_strcat_output_to_params_out(out, output);
-  }
 
-  return EXIT_SUCCESS;
-};
+    posixio_print = !selfie_getenv("SELFIE_POSIXIO_PRINT");
+    output[OUTPUT_ROWMAX - 1] = '\0';
+    if (posixio_print != 0)
+    {
+      snprintf(output, OUTPUT_ROWMAX - 1,
+	       "\n=== SELFIE POSIXIO DETAILS ===\n\n");
+      selfie_strcat_output_to_params_out(out, output);
+      snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12s\t%12s\n\n", "Function",
+	       "Count", "Time");
+      selfie_strcat_output_to_params_out(out, output);
+      for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
+      {
+	if (selfie_posixio_global_data[i].function_count > 0)
+	{
+	  tmp_string = selfie_get_posixio_function_name(i);
+	  snprintf(output, OUTPUT_ROWMAX - 1, "%20s\t%12llu\t%10.2lf\n",
+		   tmp_string, selfie_posixio_global_data[i].function_count,
+		   selfie_posixio_global_data[i].function_time);
+	  selfie_strcat_output_to_params_out(out, output);
+	  free(tmp_string);
+	}
+      }
+      snprintf(output, OUTPUT_ROWMAX - 1, "\n");
+      selfie_strcat_output_to_params_out(out, output);
+    }
 
-/// \brief structure for plugin posixio
-plugins_functions selfie_plugin_posixio = {selfie_plugin_posixio_pre,
-					   selfie_plugin_posixio_init,
-					   selfie_plugin_posixio_finalize};
+    return EXIT_SUCCESS;
+  };
+
+  /// \brief structure for plugin posixio
+  plugins_functions selfie_plugin_posixio = {selfie_plugin_posixio_pre,
+					     selfie_plugin_posixio_init,
+					     selfie_plugin_posixio_finalize};
 }
-extern "C" {
+extern "C"
+{
 #endif
 }

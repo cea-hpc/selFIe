@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -48,7 +48,7 @@ double selfie_mysecond(void)
 
   i = gettimeofday(&tp, &tzp);
   if (i < 0)
-	  return 0;
+    return 0;
   return ((double)tp.tv_sec + (double)tp.tv_usec * 1.e-6);
 };
 
@@ -87,9 +87,9 @@ int selfie_getcmdline(char *cmdline)
   ssize_t len = 0;
   len = readlink("/proc/self/exe", cmdline, MAX_CMDLINE);
   if (len < 0)
-	  return errno;
+    return errno;
   if (len >= MAX_CMDLINE)
-	  return ENAMETOOLONG;
+    return ENAMETOOLONG;
 
   return EXIT_SUCCESS;
 };
@@ -716,13 +716,13 @@ int selfie_read_env_vars(params_in *in)
   else
   {
     tmp_string = getenv(list[2]);
-    if(tmp_string != NULL)
+    if (tmp_string != NULL)
     {
-      filename = (char*) malloc(2048*sizeof(char));
-      if(filename != NULL)
+      filename = (char *)malloc(2048 * sizeof(char));
+      if (filename != NULL)
       {
 	currentpid = getpid();
-	if(sprintf(filename, "%s/selfie_%d.out", tmp_string, currentpid) > 0)
+	if (sprintf(filename, "%s/selfie_%d.out", tmp_string, currentpid) > 0)
 	{
 	  in->outputfile = filename;
 	}
@@ -762,8 +762,9 @@ int selfie_check_exclude(params_in *in)
     for (i = 0; i < in->nb_exclude_commands; i++)
     {
       err = regcomp(&preg, in->exclude_commands[i], REG_NOSUB | REG_EXTENDED);
-      if (err) {
-        continue;
+      if (err)
+      {
+	continue;
       }
       if (regexec(&preg, in->cmdline, 0, NULL, 0) == 0)
       {
@@ -814,24 +815,26 @@ int selfie_write_outputfile(char *filename, char *outlog)
   char *tmpfilename = NULL;
   char *directory = NULL;
   struct stat sb;
-  
-  tmpfilename = strdup(filename);
+
 #ifdef HAVE_DEBUG
-  printf("selfie_output: %s\n", tmpfilename);
+  PINFO("");
 #endif
-  if(tmpfilename != NULL)
+
+  tmpfilename = strdup(filename);
+  if (tmpfilename != NULL)
   {
     directory = dirname(tmpfilename);
-#ifdef HAVE_DEBUG
-    printf("selfie_output directory: %s\n", directory);
-#endif
     if (!(stat(directory, &sb) == 0 && S_ISDIR(sb.st_mode)))
     {
-      if(mkdir(directory, 0700) != 0)
+      if (mkdir(directory, 0700) != 0)
       {
 	return EXIT_SUCCESS;
       }
     }
+#ifdef HAVE_DEBUG
+    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__, tmpfilename);
+#endif
+  
     f_output = fopen(filename, "a+");
     if (f_output != NULL)
     {

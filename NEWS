@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Next release
+	### Added
+	- Add OMP profiling feature
+
 ## [1.0.3]
         ### Added
 	- Add feature for writing logs in a different files in a directory

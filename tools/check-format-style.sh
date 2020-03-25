@@ -1,6 +1,6 @@
-#!/bin/env bash
-# Copyright (C) 2015-2017 CEA/DAM                                    
-# Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>     
+#!/usr/bin/env bash
+# Copyright (C) 2015-2019 CEA/DAM                                    
+# Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>     
 #                                                                    
 # This software is governed by the CeCILL-C license under French law and
 # abiding by the rules of distribution of free software.  You can  use, 
@@ -16,30 +16,31 @@
 # @brief  Script to check if source file is correctly written
 #
 
-SOURCEFILE=$1
+ret=0
 
-if [[ ! -f "${SOURCEFILE}" ]] 
-then
-    echo "File doesn't exist ..."
-    exit 1
-fi
+for SOURCEFILE in $*
+do
+    if [[ ! -f "${SOURCEFILE}" ]] 
+    then
+	printf " %-69s  \033[33m[SKIPPED]\033[0m\n" ${SOURCEFILE}
+    	continue
+    fi
 
-clang-format ${SOURCEFILE} > ${SOURCEFILE}.new
+    clang-format ${SOURCEFILE} > ${SOURCEFILE}.new
 
-diff ${SOURCEFILE} ${SOURCEFILE}.new > /dev/null
+    diff ${SOURCEFILE} ${SOURCEFILE}.new > /dev/null
 
-ret=$?
+    lret=$?
 
-if [[ $ret -eq 0 ]]
-then
-    echo "OK"
-    ret=0
-else
-    echo "KO"
-    ret=1
-fi
+    if [[ $lret -eq 0 ]]
+    then
+	printf " %-69s  \033[32m[PASSED]\033[0m\n" ${SOURCEFILE}
+    else
+	printf " %-69s  \033[31m[FAILED]\033[0m\n" ${SOURCEFILE}
+	lret=1
+    fi
 
-rm -f ${SOURCEFILE}.new
-
+    rm -f ${SOURCEFILE}.new
+done 
 exit ${ret}
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -63,7 +63,7 @@ plugins_functions *selfie_plugins[] = {
     &selfie_plugin_mpiio,
 #endif
 #ifdef HAVE_OMP
-  &selfie_plugin_omp,
+    &selfie_plugin_omp,
 #endif
     NULL};
 

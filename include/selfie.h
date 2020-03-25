@@ -1,5 +1,5 @@
-// Copyright (C) 2015-2017 CEA/DAM
-// Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
+// Copyright (C) 2015-2019 CEA/DAM
+// Copyright (C) 2015-2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 //
 // This file is part of SelFIe.
 //
@@ -38,9 +38,7 @@
 /// \brief List of environment variables at runtime
 #define ENVVARS_RUNTIME                                                        \
   {                                                                            \
-    "SELFIE_LOG",                                                              \
-    "SELFIE_OUTPUTFILE",                                                       \
-    "SELFIE_OUTPUTDIR"                                                         \
+    "SELFIE_LOG", "SELFIE_OUTPUTFILE", "SELFIE_OUTPUTDIR"                      \
   }
 
 /// \brief For library compatibility
@@ -50,12 +48,18 @@
 
 #include <stdlib.h>
 
+#ifdef HAVE_DEBUG
+typedef struct _IO_FILE FILE;
+extern FILE *stderr;
+extern int fprintf(FILE *stream, const char *format, ...);
+
 /// \def     PINFO
 /// \brief   Print information message for function
 ///
 /// \details
 ///
 #define PINFO(s) fprintf(stderr, "%s - %s - %s\n", "[selfie]", __func__, s)
+#endif
 
 /// \typedef params_in
 /// \brief   params_in of struct Params_in
