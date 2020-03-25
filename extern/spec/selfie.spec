@@ -1,7 +1,7 @@
 %define  debug_package %{nil}
 
 Name:           selfie
-Version:        1.0.3
+Version:        1.0.4
 Release:        1%{?dist}
 Summary:        SElf and Light proFIling Engine
 
@@ -9,7 +9,7 @@ License:        GPL License
 URL:            https://github.com/cea-hpc/selFIe
 Source:         %{name}-%{version}.tar.gz
 
-BuildRequires:  gcc gcc-c++ gcc-gfortran bash python autoconf automake m4 libtool glibc-headers glibc-devel doxygen libstdc++ libstdc++-devel chrpath binutils papi-devel papi libyaml-devel libyaml
+BuildRequires:  gcc gcc-c++ gcc-gfortran bash python3 autoconf automake m4 libtool glibc-headers glibc-devel doxygen libstdc++ libstdc++-devel chrpath binutils papi-devel papi libyaml-devel libyaml
 Requires:       libstdc++ glibc binutils papi libyaml
 AutoProv:       0
 AutoReq:        0
@@ -21,7 +21,7 @@ Light profiling for all Linux commands
 %setup -q 
 
 %build
-%configure --with-papi --with-mpi --with-posixio 
+%configure --with-papi --with-mpi --with-posixio --with-omp
 make %{?_smp_mflags}
 
 %install
@@ -40,6 +40,10 @@ rm -rf %{_buildrootdir}/*
 %config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 
 %changelog
+* Wed Mar 25 2020 Laurent Nguyen <laurent.nguyen@cea.fr>
+- 1.0.4 release
+- Update scripts for Python3
+
 * Mon Apr 15 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.3 release
 - Add feature for writing logs in a different files in a directory
