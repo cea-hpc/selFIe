@@ -28,6 +28,7 @@ addons:
       - libpapi-dev
       - papi-tools
       - libyaml-dev
+      - python3
  
 install: true
 
