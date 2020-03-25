@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env python3
 # Copyright (C) 2015-2017 CEA/DAM
 # Copyright (C) 2015-2017 Laurent Nguyen <laurent.nguyen@cea.fr>
 #
