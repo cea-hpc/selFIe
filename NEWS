@@ -2,8 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## Next release
+
+## [1.0.4]
 	### Added
-	- Add OMP profiling feature
+	- Add OMP profiling feature (Thanks Adrien Cotte)
+	- Update scripts for Python3
 
 ## [1.0.3]
         ### Added
