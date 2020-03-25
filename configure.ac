@@ -22,7 +22,7 @@ AC_DEFINE([SELFIE_VERSION],[selfie_version],[Version])
 AC_LANG([C])
 
 # use Python
-AM_PATH_PYTHON([3.6])
+AM_PATH_PYTHON([3.4])
 
 # Checks for programs.
 AC_CONFIG_MACRO_DIR([m4])
