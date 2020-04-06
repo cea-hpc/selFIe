@@ -17,19 +17,99 @@
 #
 # \details   No
 
+sudo: required
+
 language: cpp
 
 compiler: gcc
+os:
+  - linux
 
-addons:
-  apt:
-    packages:
-      - make
-      - libpapi-dev
-      - papi-tools
-      - libyaml-dev
-      - python3
- 
+jobs:
+  include:
+    - env: OS_NAME="ubuntu" OS_VERSION="bionic" CMD_PREFIX=""
+      addons:
+        apt:
+          packages:
+            - make
+            - libpapi-dev
+            - papi-tools
+            - libyaml-dev
+            - python3
+      dist:
+        - bionic
+      arch:
+        - amd64
+    - env: OS_NAME="ubuntu" OS_VERSION="bionic" CMD_PREFIX=""
+      addons:
+        apt:
+          packages:
+            - make
+            - libpapi-dev
+            - papi-tools
+            - libyaml-dev
+            - python3
+      dist:
+        - bionic
+      arch:
+        - arm64
+    - env: OS_NAME="ubuntu" OS_VERSION="xenial" CMD_PREFIX=""
+      addons:
+        apt:
+          packages:
+            - make
+            - libpapi-dev
+            - papi-tools
+            - libyaml-dev
+            - python3
+      dist:
+        - xenial
+      arch:
+        - amd64
+    - env: OS_NAME="ubuntu" OS_VERSION="xenial" CMD_PREFIX=""
+      addons:
+        apt:
+          packages:
+            - make
+            - libpapi-dev
+            - papi-tools
+            - libyaml-dev
+            - python3
+      dist:
+        - xenial
+      arch:
+        - arm64
+    - env: OS_NAME=centos OS_VERSION=7 DOCKER_IMAGE=${OS_NAME}:${OS_NAME}${OS_VERSION} CONTAINER=${OS_NAME}${OS_VERSION}
+           CMD_PREFIX="docker exec --env RUNTESTFLAGS=-v $CONTAINER"
+      services:
+        - docker
+    - env: OS_NAME=centos OS_VERSION=8 DOCKER_IMAGE=${OS_NAME}:${OS_NAME}${OS_VERSION} CONTAINER=${OS_NAME}${OS_VERSION}
+           CMD_PREFIX="docker exec --env RUNTESTFLAGS=-v $CONTAINER"
+      services:
+        - docker
+
 install: true
 
-script: ./autogen.sh && ./configure --prefix=${HOME}/selfie CC=${CC_FOR_BUILD} CXX=${CXX_FOR_BUILD} --with-mpi --with-papi --with-posixio --with-yaml --with-omp && make && make install
+before_install: |
+  if [ -n "$DOCKER_IMAGE" ]; then
+    docker pull $DOCKER_IMAGE &&
+    docker run --name $CONTAINER --detach --rm -i -t -w /selfie -e TRAVIS='true' $DOCKER_IMAGE /bin/bash
+    case "${OS_NAME}" in
+      centos)
+         if [ $OS_VERSION -eq 6 ]; then docker exec $CONTAINER yum install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 gcc-c++;fi
+         if [ $OS_VERSION -eq 7 ]; then docker exec $CONTAINER yum install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 gcc-c++;fi
+         if [ $OS_VERSION -eq 8 ]; then docker exec $CONTAINER dnf install -y dnf-plugins-core ; docker exec $CONTAINER dnf config-manager --enable PowerTools ; docker exec $CONTAINER dnf install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 gcc-c++;fi
+        ;;
+      *)
+        ;;
+    esac
+    docker cp ./. $CONTAINER:selfie
+  else
+    true
+  fi
+
+script:
+  - $CMD_PREFIX ./autogen.sh
+  - $CMD_PREFIX ./configure --prefix=${HOME}/selfie CC=${CC_FOR_BUILD} CXX=${CXX_FOR_BUILD} --with-mpi --with-papi --with-posixio --with-yaml --with-omp
+  - $CMD_PREFIX make
+  - $CMD_PREFIX make install
