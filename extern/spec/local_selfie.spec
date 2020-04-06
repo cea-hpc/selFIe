@@ -1,10 +1,3 @@
-# Specfile to generate a custom RPM to install software in another place
-# This RPM include a specific version of PAPI
-# You have to type QA_RPATHS=$[ 0x0002 ] rpmbuild -ba ccc_selfie.spec to remove error
-# concerning RPATHs 
-
-%define  debug_package %{nil}
-
 Name:           selfie
 Version:        1.0.4
 Release:        1%{?dist}
@@ -14,40 +7,38 @@ License:        GPL License
 URL:            https://github.com/cea-hpc/selFIe
 Source:         %{name}-%{version}.tar.gz
 
-BuildRequires:  gcc gcc-c++ gcc-gfortran bash python3 autoconf automake m4 libtool glibc-headers glibc-devel doxygen libstdc++ libstdc++-devel chrpath binutils libyaml-devel libyaml papi papi-devel
-Requires:       libstdc++ glibc binutils libyaml papi
+BuildRequires:  gcc gcc-c++ gcc-gfortran bash python3 autoconf automake m4 libtool glibc-headers glibc-devel doxygen libstdc++ libstdc++-devel chrpath binutils papi-devel papi libyaml-devel libyaml
+Requires:       libstdc++ glibc binutils papi libyaml
 AutoProv:       0
 AutoReq:        0
 
-%define  _prefix /opt/%{name}-%{version}
-%define  _sysconfdir /etc/selfie
-%define  selfieconf selfie.conf
+%global _prefix /opt/%{name}-%{version}
+%global _sysconfdir %{_sysconfdir}/selfie
 
 %description
 Light profiling for all Linux commands
 
 %prep
-%setup -q -b 0 -T -D
+%setup -q 
 
 %build
-cd %{_builddir}/%{name}-%{version}
-%configure --with-papi --with-mpi --with-posixio=builtin
+%configure --with-papi --with-mpi --with-posixio
 make %{?_smp_mflags}
-rm -rf %{_prefix}
 
 %install
-cd %{_builddir}/%{name}-%{version}
+rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 %clean
 rm -rf %{_buildrootdir}/*
 
 %files
-%config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
-%defattr(-,root,root)
-%dir %{_prefix}
+%defattr(-,root,root,755)
+%{_prefix}/lib64/selfie.so
+%{_prefix}/lib64/selfie.la
+%{_prefix}/share/doc/selfie
 %doc %{_prefix}/share/doc/selfie/README.md
-%{_prefix}
+%config(noreplace) %attr(644,root,root) %{_sysconfdir}/selfie.conf
 
 %changelog
 * Wed Mar 25 2020 Laurent Nguyen <laurent.nguyen@cea.fr>
@@ -61,13 +52,9 @@ rm -rf %{_buildrootdir}/*
 - Correction with -Wall compilation option
 
 * Thu Mar 21 2019 Laurent Nguyen <laurent.nguyen@cea.fr>
-- 1.0.2 release 
-- Correction to get outputfilename
-- Update PAPI version to 5.7.0
-
-* Tue Jul 31 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
-- 1.0.2b0 release 2
-- Correction to get outputfilename
+- 1.0.2 release
+- Add output file feature
+- Update specfile for RHEL7/CentOS7
 
 * Tue Jul 24 2018 Laurent Nguyen <laurent.nguyen@cea.fr>
 - 1.0.2b0 release
@@ -75,4 +62,4 @@ rm -rf %{_buildrootdir}/*
 - New specfile for RHEL7/CentOS7
 
 * Wed May 18 2016 Laurent Nguyen <laurent.nguyen@cea.fr>
-- 1.0 First release 
+- 1.0 First release
