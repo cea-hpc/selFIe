@@ -41,6 +41,7 @@ install-sh
 ltmain.sh
 m4/
 missing
+*-driver
 
 *.tar.gz
 

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+program=hello
+
+SELFIE_TOPDIR=$(readlink -f @selfiepath@)
+SELFIE_LIBPATH=${SELFIE_TOPDIR}/src
+
+LD_PRELOAD=${SELFIE_LIBPATH}/selfie.so ${SELFIE_TOPDIR}/test/${program}
