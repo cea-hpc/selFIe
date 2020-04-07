@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## Next release
-
+        ###
+	- Add more tests on Travis (Thanks to Xavier Delaruelle)
 ## [1.0.4]
 	### Added
 	- Add OMP profiling feature (Thanks Adrien Cotte)
