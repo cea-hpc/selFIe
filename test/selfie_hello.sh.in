@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-program=hello
+program=hello.exe
 
 SELFIE_TOPDIR=$(readlink -f @selfiepath@)
 SELFIE_LIBPATH=${SELFIE_TOPDIR}/src

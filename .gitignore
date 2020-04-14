@@ -44,8 +44,10 @@ missing
 *-driver
 
 *.tar.gz
-
 src/selfie_posixio_functions.h
 src/selfie_mpi_functions.h
 src/selfie_mpiio_functions.h
 test/*.sh
+test/*.exe
+test/*.log
+test/*.trs
