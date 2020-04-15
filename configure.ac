@@ -4,11 +4,11 @@
 m4_define([selfie_major_version], [1])
 m4_define([selfie_minor_version], [0])
 m4_define([selfie_revision_version], [4])
-m4_define([selfie_version], [selfie_major_version.selfie_minor_version])
+m4_define([selfie_version], [selfie_major_version.selfie_minor_version.selfie_revision_version])
 
 AC_PREREQ([2.63])
 AC_INIT([SELFIE], [selfie_version], [laurent.nguyen@cea.fr],[],[https://github.com/cea-hpc/selFIe])
-AM_INIT_AUTOMAKE([-Wall])
+AM_INIT_AUTOMAKE([-Wall subdir-objects])
 AC_CONFIG_SRCDIR([src/selfie.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -259,6 +259,7 @@ AC_SUBST([AM_LDFLAGS])
 AC_SUBST([CONFIGFILENAME],[selfie.conf])
 
 AC_CONFIG_FILES([Makefile
-	src/Makefile])
+	src/Makefile
+	test/Makefile])
 
 AC_OUTPUT

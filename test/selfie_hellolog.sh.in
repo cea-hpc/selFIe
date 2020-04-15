@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+## Copyright (C) 2015-2020 CEA/DAM
+## Copyright (C) 2015-2020 Laurent Nguyen <laurent.nguyen@cea.fr>
+##
+## This file is part of SelFIe.
+##
+## This software is governed by the CeCILL-C license under French law and
+## abiding by the rules of distribution of free software.  You can  use,
+## modify and/ or redistribute the software under the terms of the CeCILL-C
+## license as circulated by CEA, CNRS and INRIA at the following URL
+## "http://www.cecill.info".
+
+###
+### @file   selfie_hellolog.sh
+### @author NGUYEN Laurent <laurent.nguyen@cea.fr>
+### @date   Tue Apr 07 12:00:00 2020
+###
+### @brief  Script to execute program with selfie and test if logs are written
+###
+###
+###
+
+set -e
+
+program=hello.exe
+
+SELFIE_SCRIPT=$(basename $0)
+SELFIE_TOPDIR=$(readlink -f @selfiepath@)
+SELFIE_LIBPATH=${SELFIE_TOPDIR}/src/.libs
+
+export SELFIE_CONFIGFILE=${SELFIE_TOPDIR}/test/selfie.conf
+export SELFIE_LOG=1
+
+LD_PRELOAD=${SELFIE_LIBPATH}/selfie.so ${SELFIE_TOPDIR}/test/${program} > ${SELFIE_SCRIPT}.out 2> ${SELFIE_SCRIPT}.err
+
+grep timestamp ${SELFIE_SCRIPT}.err
+
+exit $?
+

@@ -113,3 +113,4 @@ script:
   - $CMD_PREFIX ./configure --prefix=${HOME}/selfie CC=${CC_FOR_BUILD} CXX=${CXX_FOR_BUILD} --with-mpi --with-papi --with-posixio --with-yaml --with-omp
   - $CMD_PREFIX make
   - $CMD_PREFIX make install
+  - $CMD_PREFIX make check

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+## Copyright (C) 2015-2020 CEA/DAM
+## Copyright (C) 2015-2020 Laurent Nguyen <laurent.nguyen@cea.fr>
+##
+## This file is part of SelFIe.
+##
+## This software is governed by the CeCILL-C license under French law and
+## abiding by the rules of distribution of free software.  You can  use,
+## modify and/ or redistribute the software under the terms of the CeCILL-C
+## license as circulated by CEA, CNRS and INRIA at the following URL
+## "http://www.cecill.info".
+
+###
+### @file   selfie_hello.sh
+### @author NGUYEN Laurent <laurent.nguyen@cea.fr>
+### @date   Tue Apr 07 12:00:00 2020
+###
+### @brief  Script to generate a selfie configuration file
+###
+###
+###
+
+set -e
+
+SELFIE_SCRIPT=$(basename $0)
+SELFIE_TOPDIR=$(readlink -f @selfiepath@)
+
+
+cat <<EOF > ${SELFIE_TOPDIR}/test/selfie.conf
+env_vars:
+- USER
+- OMP_NUM_THREADS
+- SELFIE_TEST
+
+time_limit: 0.0
+
+exclude_commands:
+- ^/sbin/
+EOF
+
+cat ${SELFIE_TOPDIR}/test/selfie.conf
