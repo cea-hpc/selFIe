@@ -11,11 +11,12 @@
 ## "http://www.cecill.info".
 
 ###
-### @file   selfie_hello.sh
+### @file   selfie_hellovar.sh
 ### @author NGUYEN Laurent <laurent.nguyen@cea.fr>
 ### @date   Tue Apr 07 12:00:00 2020
 ###
-### @brief  Script to execute program with selfie
+### @brief  Script to execute program with selfie and test if environment
+###         variable are passed to selfie
 ###
 ###
 ###
@@ -28,4 +29,13 @@ SELFIE_SCRIPT=$(basename $0)
 SELFIE_TOPDIR=$(readlink -f @selfiepath@)
 SELFIE_LIBPATH=${SELFIE_TOPDIR}/src/.libs
 
+export SELFIE_CONFIGFILE=${SELFIE_TOPDIR}/test/selfie.conf
+export SELFIE_LOG=1
+export SELFIE_TEST="$(date +%s)"
+
 LD_PRELOAD=${SELFIE_LIBPATH}/selfie.so ${SELFIE_TOPDIR}/test/${program} > ${SELFIE_SCRIPT}.out 2> ${SELFIE_SCRIPT}.err
+
+grep ${SELFIE_TEST} ${SELFIE_SCRIPT}.err
+
+exit $?
+

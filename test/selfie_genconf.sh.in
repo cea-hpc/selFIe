@@ -15,17 +15,27 @@
 ### @author NGUYEN Laurent <laurent.nguyen@cea.fr>
 ### @date   Tue Apr 07 12:00:00 2020
 ###
-### @brief  Script to execute program with selfie
+### @brief  Script to generate a selfie configuration file
 ###
 ###
 ###
 
 set -e
 
-program=hello.exe
-
 SELFIE_SCRIPT=$(basename $0)
 SELFIE_TOPDIR=$(readlink -f @selfiepath@)
-SELFIE_LIBPATH=${SELFIE_TOPDIR}/src/.libs
 
-LD_PRELOAD=${SELFIE_LIBPATH}/selfie.so ${SELFIE_TOPDIR}/test/${program} > ${SELFIE_SCRIPT}.out 2> ${SELFIE_SCRIPT}.err
+
+cat <<EOF > ${SELFIE_TOPDIR}/test/selfie.conf
+env_vars:
+- USER
+- OMP_NUM_THREADS
+- SELFIE_TEST
+
+time_limit: 0.0
+
+exclude_commands:
+- ^/sbin/
+EOF
+
+cat ${SELFIE_TOPDIR}/test/selfie.conf

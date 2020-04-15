@@ -51,3 +51,5 @@ test/*.sh
 test/*.exe
 test/*.log
 test/*.trs
+test/*.out
+test/*.err
