@@ -186,6 +186,17 @@ if test $ENABLEOMP = 1; then
    AC_DEFINE([HAVE_OMP],[],[Enable OMP profiling])
 fi
 
+# Check for MIO
+AC_ARG_WITH([mio],
+    [AS_HELP_STRING([--with-mio],
+        [Enable MIO (Mero IO for Maestro) profiling])],
+    [ENABLEMIO=1],
+    [ENABLEMIO=0])
+
+if test $ENABLEMIO = 1; then
+   AC_DEFINE([HAVE_MIO],[],[Enable MIO (Mero IO for Maestro) profiling])
+fi
+
 
 OLD_AM_CXXFLAGS="$AM_CXXFLAGS"
 OLD_AM_CPPFLAGS="$AM_CPPFLAGS"

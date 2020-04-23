@@ -3,20 +3,25 @@ TESTS = hello.exe \
 	selfie_genconf.sh \
 	selfie_helloconf.sh \
 	selfie_hellolog.sh \
-	selfie_hellovar.sh 
-check_PROGRAMS = hello.exe
+	selfie_hellovar.sh \
+	mio.exe \
+	selfie_mio.sh
+check_PROGRAMS = hello.exe mio.exe
 check_SCRIPTS = selfie_hello.sh \
 	selfie_genconf.sh \
 	selfie_helloconf.sh \
 	selfie_hellolog.sh \
-	selfie_hellovar.sh
+	selfie_hellovar.sh \
+	selfie_mio.sh
 hello_exe_SOURCES = hello.c
+mio_exe_SOURCES = mio.c
 CLEANFILES = selfie.conf \
 	selfie_hello.sh \
 	selfie_genconf.sh \
 	selfie_helloconf.sh \
 	selfie_hellolog.sh \
 	selfie_hellovar.sh \
+	selfie_mio.sh \
 	*.out *.err *~
 
 selfie_hello.sh: selfie_hello.sh.in hello.exe
@@ -38,5 +43,9 @@ selfie_hellolog.sh: selfie_hellolog.sh.in hello.exe
 selfie_hellovar.sh: selfie_hellovar.sh.in hello.exe
 	sed 's|@selfiepath@|'${top_srcdir}'|g' selfie_hellovar.sh.in > selfie_hellovar.sh
 	chmod 750 selfie_hellovar.sh
+
+selfie_mio.sh: selfie_mio.sh.in mio.exe
+	sed 's|@selfiepath@|'${top_srcdir}'|g' selfie_mio.sh.in > selfie_mio.sh
+	chmod 750 selfie_mio.sh
 
 
