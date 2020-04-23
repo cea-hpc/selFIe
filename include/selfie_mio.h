@@ -24,22 +24,25 @@
 #include "selfie.h"
 #include "selfie_tools.h"
 
-/// \brief      preInitialize plugin
-/// \return     exit code
-int selfie_plugin_mio_pre();
+extern "C"
+{
+  /// \brief      preInitialize plugin
+  /// \return     exit code
+  int selfie_plugin_mio_pre();
 
-/// \brief      Initialize plugin
-/// \param[in]  in  Input parameter for plugin
-/// \param[out] out Output parameter for plugin
-/// \return     exit code
-int selfie_plugin_mio_init(params_in *in, params_out *out);
+  /// \brief      Initialize plugin
+  /// \param[in]  in  Input parameter for plugin
+  /// \param[out] out Output parameter for plugin
+  /// \return     exit code
+  int selfie_plugin_mio_init(params_in *in, params_out *out);
 
-/// \brief      Finalize plugin
-/// \param[in]  in  Input parameter for plugin
-/// \param[out] out Output parameter for plugin
-/// \return     exit code
-int selfie_plugin_mio_finalize(params_in *in, params_out *out);
+  /// \brief      Finalize plugin
+  /// \param[in]  in  Input parameter for plugin
+  /// \param[out] out Output parameter for plugin
+  /// \return     exit code
+  int selfie_plugin_mio_finalize(params_in *in, params_out *out);
 
-/// \brief structure for plugin mio
-plugins_functions selfie_plugin_mio;
+  /// \brief structure for plugin mio
+  extern plugins_functions selfie_plugin_mio;
+}
 #endif

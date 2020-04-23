@@ -21,7 +21,7 @@
 ###
 ###
 
-set -e
+set -ex
 
 program=mio.exe
 

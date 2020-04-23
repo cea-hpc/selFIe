@@ -31,7 +31,7 @@ selfie_papi.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie
 
 selfie_omp.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_omp.h
 
-selfie_mio.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_mio.h	
+selfie_mio.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_mio.h ${top_srcdir}/src/selfie_mio_functions.h
 
 selfie_posixio.lo: selfie_posixio_functions.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_posixio.h
 
