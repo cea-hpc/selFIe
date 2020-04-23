@@ -14,7 +14,14 @@ check_SCRIPTS = selfie_hello.sh \
 	selfie_hellovar.sh \
 	selfie_mio.sh
 hello_exe_SOURCES = hello.c
-mio_exe_SOURCES = mio.c
+#mio_exe_SOURCES = mio.c
+#mio_exe_LDFLAGS = -L.libs -lselfie_mio_test
+lib_LTLIBRARIES = libselfie_mio_test.la
+libselfie_mio_test_la_SOURCES = selfie_mio_test.c
+libselfie_mio_test_la_LDFLAGS = -module -avoid-version -shared
+
+AM_CFLAGS += -Wall
+AM_CXXFLAGS += -Wall
 CLEANFILES = selfie.conf \
 	selfie_hello.sh \
 	selfie_genconf.sh \
@@ -23,6 +30,10 @@ CLEANFILES = selfie.conf \
 	selfie_hellovar.sh \
 	selfie_mio.sh \
 	*.out *.err *~
+AM_CPPFLAGS += -I$(top_srcdir)/include
+
+mio.exe: libselfie_mio_test.la mio.c
+	$(CC) -I${top_srcdir}/include -o $@ mio.c -L.libs -Wl,-rpath,.libs -lselfie_mio_test
 
 selfie_hello.sh: selfie_hello.sh.in hello.exe
 	sed 's|@selfiepath@|'${top_srcdir}'|g' selfie_hello.sh.in > selfie_hello.sh
