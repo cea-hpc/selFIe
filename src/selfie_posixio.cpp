@@ -110,6 +110,7 @@ extern "C"
     unsigned long long int posixio_count = (unsigned long long int)0;
     int posixio_print = 0;
     char *tmp_string = NULL;
+    char *field_string = NULL;
     char output[OUTPUT_ROWMAX] = "";
 #ifdef HAVE_DEBUG
     PINFO("");
@@ -126,8 +127,29 @@ extern "C"
 	posixio_count += selfie_posixio_global_data[i].function_count;
       }
 
-      selfie_json_double_to_log(out, "posixio_time", posixio_wtime);
-      selfie_json_llu_to_log(out, "posixio_count", posixio_count);
+      selfie_json_double_to_log(out, "pio_time", posixio_wtime);
+      selfie_json_llu_to_log(out, "pio_count", posixio_count);
+      for (i = 0; i < N_POSIXIO_FUNCTIONS; i++)
+      {
+      	if (selfie_posixio_global_data[i].function_count > 0)
+      	{
+      	  tmp_string = selfie_get_posixio_function_name(i);
+      	  field_string = (char *) malloc(strlen(tmp_string) + strlen("pio_t_") + 2);
+      	  strncpy(field_string, "pio_t_", strlen("pio_t_") + 1);
+      	  strncat(field_string, tmp_string, strlen(tmp_string) + 1);
+      	  selfie_json_double_to_log(out, field_string,
+      				    selfie_posixio_global_data[i].function_time);
+      	  free(field_string);
+
+      	  field_string = (char *) malloc(strlen(tmp_string) + strlen("pio_c_") + 2);
+      	  strncpy(field_string, "pio_c_", strlen("pio_c_") + 1);
+      	  strncat(field_string, tmp_string, strlen(tmp_string) + 1);
+      	  selfie_json_llu_to_log(out, field_string,
+      				    selfie_posixio_global_data[i].function_count);
+      	  free(field_string);
+      	  free(tmp_string);
+      	}
+      }
     }
 
     posixio_print = !selfie_getenv("SELFIE_POSIXIO_PRINT");
