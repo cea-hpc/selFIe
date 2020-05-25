@@ -832,9 +832,10 @@ int selfie_write_outputfile(char *filename, char *outlog)
       }
     }
 #ifdef HAVE_DEBUG
-    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__, tmpfilename);
+    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__,
+	    tmpfilename);
 #endif
-  
+
     f_output = fopen(filename, "a+");
     if (f_output != NULL)
     {
@@ -848,12 +849,74 @@ int selfie_write_outputfile(char *filename, char *outlog)
 }
 
 /// \details
+int selfie_write_syslog(char json[], int size, int option)
+{
+  char *s2print = NULL;
+  char *field = NULL;
+  int c = 0, i = 1, s = 0, count = 0;
+
+  s2print = (char *)malloc(size + 1);
+  s2print[0] = '{';
+  s2print[1] = '\0';
+  openlog("selfie", option, LOG_USER);
+
+  for (;;)
+  {
+    count = 0;
+    do
+    {
+      c = json[i + count];
+      count++;
+    } while (!(c == ',' || c == '\0' || c == '}'));
+    if (c == '\0')
+    {
+      if (strlen(s2print) > 2)
+      {
+	s2print[strlen(s2print) - 2] = '\0';
+	strncat(s2print, " }", 3);
+	syslog(LOG_INFO, "%s", s2print);
+	s2print[1] = '\0';
+      }
+      break;
+    }
+    field = (char *)malloc(count + 1);
+    for (s = 0; s < count; s++)
+    {
+      field[s] = json[i + s];
+    }
+    field[s - 1] = '\0';
+    if (c == '}')
+      field[s - 2] = '\0';
+
+    if ((strlen(s2print) + strlen(field) + 3) > size)
+    {
+      s2print[strlen(s2print) - 2] = '\0';
+      strncat(s2print, " }", 3);
+      syslog(LOG_INFO, "%s", s2print);
+      s2print[1] = '\0';
+    }
+    else
+    {
+      strncat(s2print, field, strlen(field) + 3);
+      strncat(s2print, ", ", 3);
+    }
+
+    free(field);
+    i += count + 1;
+  }
+  free(s2print);
+  closelog();
+  return EXIT_SUCCESS;
+}
+
+/// \details
 int selfie_write_log(params_in *in, params_out *out)
 {
   char *json_string = NULL;
   int len = 0;
   int i = 0;
   int display = 1;
+  int log_option = 0;
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
@@ -902,14 +965,13 @@ int selfie_write_log(params_in *in, params_out *out)
     // Syslog
     if (in->log_print != 0)
     {
-      openlog("selfie", LOG_PERROR | LOG_PID | LOG_NDELAY, LOG_USER);
+      log_option = LOG_PERROR | LOG_PID | LOG_NDELAY;
     }
     else
     {
-      openlog("selfie", LOG_PID | LOG_NDELAY, LOG_USER);
+      log_option = LOG_PID | LOG_NDELAY;
     }
-    syslog(LOG_INFO, "%s", json_string);
-    closelog();
+    selfie_write_syslog(json_string, 1024, log_option);
 
     // Outputfile
 
