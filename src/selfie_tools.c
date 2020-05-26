@@ -178,9 +178,13 @@ int selfie_alloc_params_out(params_out *out)
   strcpy(out->output_string, "");
   out->output_index = 0;
   out->output_size = STRING_BLOCK;
-
   out->wtime = 0.0;
-
+  strcpy(out->hostname, "");
+  out->pid = -1;
+  out->jprefix = (char *)malloc(STRING_BLOCK * sizeof(char));
+  strcpy(out->jprefix, "{ ");
+  out->jobid = -1;
+  strcpy(out->batch, "none");
   return EXIT_SUCCESS;
 };
 
@@ -196,9 +200,10 @@ int selfie_free_params_out(params_out *out)
   free(out->output_string);
   out->output_index = 0;
   out->output_size = 0;
-
   out->wtime = 0.0;
-
+  strcpy(out->hostname, "");
+  out->pid = -1;
+  free(out->jprefix);
   return EXIT_SUCCESS;
 };
 
@@ -301,6 +306,25 @@ int selfie_json_string_to_log(params_out *out, char const *key,
   char s[1024] = "";
   sprintf(s, "\"%s\": \"%s\", ", key, value);
   selfie_strcat_log_to_params_out(out, s);
+  return EXIT_SUCCESS;
+};
+
+/// \details
+int selfie_set_json_prefix(params_out *out)
+{
+#ifdef HAVE_DEBUG
+  PINFO("");
+#endif
+  char s[1024] = "";
+  /* sprintf(s, "\"hostname\": \"%s\", \"pid\": \"%d\",", */
+  /* 	  out->hostname, */
+  /* 	  out->pid); */
+  sprintf(s, "\"jobid\": \"%d\", ", out->jobid);
+  strcat(out->jprefix, s);
+  sprintf(s, "\"hostname\": \"%s\", ", out->hostname);
+  strcat(out->jprefix, s);
+  sprintf(s, "\"pid\": \"%d\",", out->pid);
+  strcat(out->jprefix, s);
   return EXIT_SUCCESS;
 };
 
@@ -832,9 +856,10 @@ int selfie_write_outputfile(char *filename, char *outlog)
       }
     }
 #ifdef HAVE_DEBUG
-    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__, tmpfilename);
+    fprintf(stderr, "[selfie] - %s - selfie_output: %s\n", __func__,
+	    tmpfilename);
 #endif
-  
+
     f_output = fopen(filename, "a+");
     if (f_output != NULL)
     {
@@ -848,12 +873,75 @@ int selfie_write_outputfile(char *filename, char *outlog)
 }
 
 /// \details
+int selfie_write_syslog(char json[], int size, int option, char prefix[])
+{
+  char *s2print = NULL;
+  char *field = NULL;
+  int c = 0, i = 1, s = 0, count = 0;
+  int start = 0;
+
+  s2print = (char *)malloc(size + 1);
+  strncpy(s2print, prefix, strlen(prefix) + 1);
+  start = strlen(s2print) + 1;
+  openlog("selfie", option, LOG_USER);
+
+  for (;;)
+  {
+    count = 0;
+    do
+    {
+      c = json[i + count];
+      count++;
+    } while (!(c == ',' || c == '\0' || c == '}'));
+    if (c == '\0')
+    {
+      if (strlen(s2print) > 2)
+      {
+	s2print[strlen(s2print) - 2] = '\0';
+	strncat(s2print, " }", 3);
+	syslog(LOG_INFO, "%s", s2print);
+	s2print[start] = '\0';
+      }
+      break;
+    }
+    field = (char *)malloc(count + 1);
+    for (s = 0; s < count; s++)
+    {
+      field[s] = json[i + s];
+    }
+    field[s - 1] = '\0';
+    if (c == '}')
+      field[s - 2] = '\0';
+
+    if ((strlen(s2print) + strlen(field) + 3) > size)
+    {
+      s2print[strlen(s2print) - 2] = '\0';
+      strncat(s2print, " }", 3);
+      syslog(LOG_INFO, "%s", s2print);
+      s2print[start] = '\0';
+    }
+    else
+    {
+      strncat(s2print, field, strlen(field) + 3);
+      strncat(s2print, ", ", 3);
+    }
+
+    free(field);
+    i += count + 1;
+  }
+  free(s2print);
+  closelog();
+  return EXIT_SUCCESS;
+}
+
+/// \details
 int selfie_write_log(params_in *in, params_out *out)
 {
   char *json_string = NULL;
   int len = 0;
   int i = 0;
   int display = 1;
+  int log_option = 0;
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
@@ -902,14 +990,13 @@ int selfie_write_log(params_in *in, params_out *out)
     // Syslog
     if (in->log_print != 0)
     {
-      openlog("selfie", LOG_PERROR | LOG_PID | LOG_NDELAY, LOG_USER);
+      log_option = LOG_PERROR | LOG_PID | LOG_NDELAY;
     }
     else
     {
-      openlog("selfie", LOG_PID | LOG_NDELAY, LOG_USER);
+      log_option = LOG_PID | LOG_NDELAY;
     }
-    syslog(LOG_INFO, "%s", json_string);
-    closelog();
+    selfie_write_syslog(json_string, 1024, log_option, out->jprefix);
 
     // Outputfile
 

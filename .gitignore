@@ -53,3 +53,4 @@ test/*.log
 test/*.trs
 test/*.out
 test/*.err
+test/selfie.conf

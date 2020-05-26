@@ -126,6 +126,13 @@ int selfie_json_double_to_log(params_out *out, char const *key, double value);
 int selfie_json_string_to_log(params_out *out, char const *key,
 			      char const *value);
 
+/// \brief       set a prefix for each log line
+///
+/// \param[in]   out
+/// \return      exit code
+///
+int selfie_set_json_prefix(params_out *out);
+
 /// \brief       Read configuration file
 ///
 /// \param[out]  in
@@ -153,6 +160,15 @@ int selfie_getenv(char const *env);
 /// \return      flag for true of false
 ///
 int selfie_check_exclude(params_in *in);
+
+/// \brief       Write string in syslog
+///
+/// \param[in]   json string
+/// \param[in]   size of string if splitting is needed
+/// \param[in]   option for openlog function
+/// \return      true if success
+///
+int selfie_write_syslog(char json[], int size, int option, char prefix[]);
 
 /// \brief       Write log
 ///

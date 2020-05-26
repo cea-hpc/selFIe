@@ -171,6 +171,7 @@ extern "C"
     double mpiio_size = 0.0;
     int mpiio_print = 0;
     char *tmp_string = NULL;
+    char *field_string = NULL;
     char output[OUTPUT_ROWMAX] = "";
 #ifdef HAVE_DEBUG
     PINFO("");
@@ -199,6 +200,29 @@ extern "C"
 	  selfie_json_string_to_log(out, "mpiio_libversion", mpiio_libversion);
 	}
       }
+
+      for (i = 0; i < N_MPIIO_FUNCTIONS; i++)
+      {
+      	if (selfie_mpiio_global_data[i].function_count > 0)
+      	{
+      	  tmp_string = selfie_get_mpiio_function_name(i);
+      	  field_string = (char *) malloc(strlen(tmp_string) + strlen("mpiio_t_") + 2);
+      	  strncpy(field_string, "mpiio_t_", strlen("mpiio_t_") + 1);
+      	  strncat(field_string, tmp_string, strlen(tmp_string) + 1);
+      	  selfie_json_double_to_log(out, field_string,
+      				    selfie_mpiio_global_data[i].function_time);
+      	  free(field_string);
+
+      	  field_string = (char *) malloc(strlen(tmp_string) + strlen("mpiio_c_") + 2);
+      	  strncpy(field_string, "mpiio_c_", strlen("mpiio_c_") + 1);
+      	  strncat(field_string, tmp_string, strlen(tmp_string) + 1);
+      	  selfie_json_llu_to_log(out, field_string,
+      				    selfie_mpiio_global_data[i].function_count);
+      	  free(field_string);
+      	  free(tmp_string);
+      	}
+      }
+      
     }
     mpiio_print = !selfie_getenv("SELFIE_MPIIO_PRINT");
     output[OUTPUT_ROWMAX - 1] = '\0';
