@@ -154,6 +154,15 @@ int selfie_getenv(char const *env);
 ///
 int selfie_check_exclude(params_in *in);
 
+/// \brief       Write string in syslog
+///
+/// \param[in]   json string
+/// \param[in]   size of string if splitting is needed
+/// \param[in]   option for openlog function
+/// \return      true if success
+///
+int selfie_write_syslog(char json[], int size, int option);
+
 /// \brief       Write log
 ///
 /// \param[in]   in
