@@ -47,6 +47,7 @@
 #endif
 
 #include <stdlib.h>
+#include <limits.h>
 
 #ifdef HAVE_DEBUG
 typedef struct _IO_FILE FILE;
@@ -111,6 +112,16 @@ typedef struct Params_out
   int output_size;
   /// execution time of program
   double wtime;
+  /// hostname
+  char hostname[HOST_NAME_MAX + 1];
+  // current pid
+  int pid;
+  // default json prefix
+  char *jprefix;
+  // jobid
+  int jobid;
+  // batch
+  char batch[16];
 } params_out;
 
 /// \typedef plugins_functions

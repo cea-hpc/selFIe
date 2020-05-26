@@ -61,6 +61,27 @@ int selfie_get_rusage(double *max_mem_gb, double *utime, double *stime)
   return EXIT_SUCCESS;
 };
 
+/// \brief   find a job id
+///
+/// \return  success
+///
+/// \details
+///
+int selfie_find_jobid(params_out *out)
+{
+  if (getenv("SLURM_JOBID") != NULL)
+  {
+    out->jobid = atoi(getenv("SLURM_JOBID"));
+    strcpy(out->batch, "slurm");
+  }
+  else
+  {
+    out->jobid = getpid();
+  }
+
+  return EXIT_SUCCESS;
+}
+
 /// \details   preInitialize here all variables for plugin
 int selfie_plugin_default_pre() { return EXIT_SUCCESS; };
 
@@ -71,6 +92,10 @@ int selfie_plugin_default_init(params_in *in, params_out *out)
   PINFO("");
 #endif
   selfie_default_global_data.start = selfie_mysecond();
+  gethostname(out->hostname, HOST_NAME_MAX + 1);
+  out->pid = getpid();
+  selfie_find_jobid(out);
+  selfie_set_json_prefix(out);
   return EXIT_SUCCESS;
 };
 
@@ -80,20 +105,16 @@ int selfie_plugin_default_finalize(params_in *in, params_out *out)
   double maxmem = 0.0;
   double utime = 0.0;
   double stime = 0.0;
-  char hostname[HOST_NAME_MAX + 1];
 #ifdef HAVE_DEBUG
   PINFO("");
 #endif
 
   out->wtime = selfie_mysecond() - selfie_default_global_data.start;
   selfie_get_rusage(&maxmem, &utime, &stime);
-  gethostname(hostname, HOST_NAME_MAX + 1);
 
   selfie_json_double_to_log(out, "utime", utime);
   selfie_json_double_to_log(out, "stime", stime);
   selfie_json_double_to_log(out, "maxmem", maxmem);
-  selfie_json_string_to_log(out, "hostname", hostname);
-
   return EXIT_SUCCESS;
 };
 

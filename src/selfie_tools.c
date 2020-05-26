@@ -178,9 +178,13 @@ int selfie_alloc_params_out(params_out *out)
   strcpy(out->output_string, "");
   out->output_index = 0;
   out->output_size = STRING_BLOCK;
-
   out->wtime = 0.0;
-
+  strcpy(out->hostname, "");
+  out->pid = -1;
+  out->jprefix = (char *)malloc(STRING_BLOCK * sizeof(char));
+  strcpy(out->jprefix, "{ ");
+  out->jobid = -1;
+  strcpy(out->batch, "none");
   return EXIT_SUCCESS;
 };
 
@@ -196,9 +200,10 @@ int selfie_free_params_out(params_out *out)
   free(out->output_string);
   out->output_index = 0;
   out->output_size = 0;
-
   out->wtime = 0.0;
-
+  strcpy(out->hostname, "");
+  out->pid = -1;
+  free(out->jprefix);
   return EXIT_SUCCESS;
 };
 
@@ -301,6 +306,25 @@ int selfie_json_string_to_log(params_out *out, char const *key,
   char s[1024] = "";
   sprintf(s, "\"%s\": \"%s\", ", key, value);
   selfie_strcat_log_to_params_out(out, s);
+  return EXIT_SUCCESS;
+};
+
+/// \details
+int selfie_set_json_prefix(params_out *out)
+{
+#ifdef HAVE_DEBUG
+  PINFO("");
+#endif
+  char s[1024] = "";
+  /* sprintf(s, "\"hostname\": \"%s\", \"pid\": \"%d\",", */
+  /* 	  out->hostname, */
+  /* 	  out->pid); */
+  sprintf(s, "\"jobid\": \"%d\", ", out->jobid);
+  strcat(out->jprefix, s);
+  sprintf(s, "\"hostname\": \"%s\", ", out->hostname);
+  strcat(out->jprefix, s);
+  sprintf(s, "\"pid\": \"%d\",", out->pid);
+  strcat(out->jprefix, s);
   return EXIT_SUCCESS;
 };
 
@@ -849,15 +873,16 @@ int selfie_write_outputfile(char *filename, char *outlog)
 }
 
 /// \details
-int selfie_write_syslog(char json[], int size, int option)
+int selfie_write_syslog(char json[], int size, int option, char prefix[])
 {
   char *s2print = NULL;
   char *field = NULL;
   int c = 0, i = 1, s = 0, count = 0;
+  int start = 0;
 
   s2print = (char *)malloc(size + 1);
-  s2print[0] = '{';
-  s2print[1] = '\0';
+  strncpy(s2print, prefix, strlen(prefix) + 1);
+  start = strlen(s2print) + 1;
   openlog("selfie", option, LOG_USER);
 
   for (;;)
@@ -875,7 +900,7 @@ int selfie_write_syslog(char json[], int size, int option)
 	s2print[strlen(s2print) - 2] = '\0';
 	strncat(s2print, " }", 3);
 	syslog(LOG_INFO, "%s", s2print);
-	s2print[1] = '\0';
+	s2print[start] = '\0';
       }
       break;
     }
@@ -893,7 +918,7 @@ int selfie_write_syslog(char json[], int size, int option)
       s2print[strlen(s2print) - 2] = '\0';
       strncat(s2print, " }", 3);
       syslog(LOG_INFO, "%s", s2print);
-      s2print[1] = '\0';
+      s2print[start] = '\0';
     }
     else
     {
@@ -971,7 +996,7 @@ int selfie_write_log(params_in *in, params_out *out)
     {
       log_option = LOG_PID | LOG_NDELAY;
     }
-    selfie_write_syslog(json_string, 1024, log_option);
+    selfie_write_syslog(json_string, 1024, log_option, out->jprefix);
 
     // Outputfile
 

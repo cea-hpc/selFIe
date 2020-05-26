@@ -74,7 +74,6 @@ __attribute__((constructor)) void selfie_init(void)
     (selfie_plugins[i]->init)(&selfie_input, &selfie_output);
     i++;
   }
-
   // fprintf(stderr,"Debug: %s\n",input.cmdline);
 }
 
