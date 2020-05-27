@@ -25,5 +25,6 @@
 int main(int argc, char *argv[])
 {
   mio_init("test");
+  mio_fini();
   return EXIT_SUCCESS;
 }

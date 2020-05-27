@@ -1068,3 +1068,12 @@ int selfie_write_output(params_in *in, params_out *out)
   }
   return EXIT_SUCCESS;
 };
+
+/// \details
+int selfie_trace_log(char json[], int option)
+{
+  openlog("selfie", option, LOG_USER);
+  syslog(LOG_INFO, "%s", json);
+  closelog();
+  return EXIT_SUCCESS;
+};

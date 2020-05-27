@@ -186,4 +186,12 @@ int selfie_write_log(params_in *in, params_out *out);
 ///
 int selfie_write_output(params_in *in, params_out *out);
 
+/// \brief       Write trace in syslog
+///
+/// \param[in]   json
+/// \param[in]   option
+/// \return      exit code
+///
+int selfie_trace_log(char json[], int option);
+
 #endif

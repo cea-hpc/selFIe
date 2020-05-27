@@ -36,12 +36,12 @@ extern "C"
 ///
 typedef struct Mio_plugin_global_data
 {
-  // Hostname
-  char hostname[HOST_NAME_MAX + 1];
   /// number of MIO function calls
   unsigned long long int function_count;
   /// duration of MIO function calls
   double function_time;
+  /// Prefix
+  char *jprefix;
 } mio_plugin_global_data;
 
 extern mio_plugin_global_data selfie_mio_global_data[];
@@ -79,7 +79,7 @@ extern "C"
 
     for (i = 0; i < N_MIO_FUNCTIONS; i++)
     {
-      gethostname(selfie_mio_global_data[i].hostname, HOST_NAME_MAX + 1);
+      selfie_mio_global_data[i].jprefix = out->jprefix;
       selfie_mio_global_data[i].function_count = (unsigned long long int)0;
       selfie_mio_global_data[i].function_time = 0.0;
     }

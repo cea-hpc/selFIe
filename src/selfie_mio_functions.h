@@ -27,13 +27,15 @@
 #include <dlfcn.h>
 #include <cstdarg>
 #include <fenv.h>
+#include <syslog.h>
+#include <time.h>
 
 #pragma STDC FENV_ACCESS ON
 
 typedef void (*function_type)(...);
 
 /// \brief Total number of MPI functions
-#define N_MIO_FUNCTIONS 1
+#define N_MIO_FUNCTIONS 2
 
 /// \brief Return a string containing name of functions
 /// \param[in] i Index
@@ -41,7 +43,7 @@ typedef void (*function_type)(...);
 ///
 char *selfie_get_mio_function_name(int i)
 {
-  char const *mio_functions_name[] = {"mio_init", NULL};
+  char const *mio_functions_name[] = {"mio_init", "mio_fini", NULL};
   return strdup(mio_functions_name[i]);
 };
 
@@ -65,16 +67,19 @@ extern "C"
     double f_start = 0.0;
     int ap_except = 0;
     int val = (int)0;
+    char miolog[1024];
+    int function_number = 0;
 
     function_type selfie_function = NULL;
-    selfie_function = (function_type)selfie_mio_pointer_functions[0];
+    selfie_function =
+	(function_type)selfie_mio_pointer_functions[function_number];
     if (selfie_function == NULL)
     {
       selfie_function = (function_type)dlsym(RTLD_NEXT, "mio_init");
       if (selfie_function == NULL)
 	return val;
     }
-    selfie_mio_global_data[0].function_count++;
+    selfie_mio_global_data[function_number].function_count++;
     f_start = selfie_mysecond();
 
     ap_except = fedisableexcept(FE_INVALID);
@@ -82,9 +87,59 @@ extern "C"
 				__builtin_apply_args(), 1024);
     feclearexcept(FE_INVALID);
     feenableexcept(ap_except);
-    selfie_mio_global_data[0].function_time += selfie_mysecond() - f_start;
+    selfie_mio_global_data[function_number].function_time +=
+	selfie_mysecond() - f_start;
+    sprintf(miolog,
+	    "%s \"timestamp\": %llu, \"function\": \"%s\", \"wtime\": %0.2f }",
+	    selfie_mio_global_data[function_number].jprefix,
+	    (unsigned long long)time(NULL), __func__,
+	    selfie_mio_global_data[function_number].function_time);
+    selfie_trace_log(miolog, LOG_PID | LOG_NDELAY);
+
     __builtin_return(ret);
 
     return val;
+  };
+
+  /// \brief mio_fini
+  ///
+  /// \param ...
+  /// \return int
+  ///
+  /// \details
+  ///
+  void mio_fini(...)
+  {
+    double f_start = 0.0;
+    int ap_except = 0;
+    int val = (int)0;
+    char miolog[1024];
+    int function_number = 1;
+
+    function_type selfie_function = NULL;
+    selfie_function =
+	(function_type)selfie_mio_pointer_functions[function_number];
+    if (selfie_function == NULL)
+    {
+      selfie_function = (function_type)dlsym(RTLD_NEXT, "mio_fini");
+    }
+    selfie_mio_global_data[function_number].function_count++;
+    f_start = selfie_mysecond();
+
+    ap_except = fedisableexcept(FE_INVALID);
+    void *ret = __builtin_apply((void (*)(...))selfie_function,
+				__builtin_apply_args(), 1024);
+    feclearexcept(FE_INVALID);
+    feenableexcept(ap_except);
+    selfie_mio_global_data[function_number].function_time +=
+	selfie_mysecond() - f_start;
+    sprintf(miolog,
+	    "%s \"timestamp\": %llu, \"function\": \"%s\", \"wtime\": %0.2f }",
+	    selfie_mio_global_data[function_number].jprefix,
+	    (unsigned long long)time(NULL), __func__,
+	    selfie_mio_global_data[function_number].function_time);
+    selfie_trace_log(miolog, LOG_PID | LOG_NDELAY);
+
+    __builtin_return(ret);
   };
 }
