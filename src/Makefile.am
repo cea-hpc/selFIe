@@ -47,3 +47,6 @@ selfie_mpiio.lo: selfie_mpiio_functions.h ${top_srcdir}/include/selfie_tools.h $
 
 selfie_mpiio_functions.h: $(srcdir)/parse_mpi.py ${top_srcdir}/etc/selfie_mpiio_functions.txt
 	$(PYTHON) $(srcdir)/parse_mpi.py -n mpiio -i ${top_srcdir}/etc/selfie_mpiio_functions.txt -o $@
+
+selfie_mio_functions.h: $(srcdir)/parse_mio.py ${top_srcdir}/etc/selfie_mio_functions.txt
+	$(PYTHON) $(srcdir)/parse_mio.py ${top_srcdir}/etc/selfie_mio_functions.txt -o $@
