@@ -1,0 +1,7 @@
+int mstro_init(const char *, const char *, uint64_t);
+int mstro_finalize();
+int mstro_cdo_declare(const char*, mstro_cdo_attributes, mstro_cdo*);
+int mstro_cdo_offer(mstro_cdo);
+int mstro_cdo_withdraw(mstro_cdo);
+int mstro_cdo_dispose(mstro_cdo);
+

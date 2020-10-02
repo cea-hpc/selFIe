@@ -4,6 +4,7 @@ selfie_la_SOURCES = selfie.c selfie_tools.c \
 	selfie_default.c \
 	selfie_papi.c \
 	selfie_omp.cpp \
+	selfie_maestro.cpp \
 	selfie_mio.cpp \
 	selfie_posixio.cpp \
 	selfie_mpi.cpp \
@@ -16,8 +17,8 @@ AM_CPPFLAGS += -DCONFIGFILENAME=\"${CONFIGFILENAME}\"
 AM_CFLAGS += -Wall
 AM_CXXFLAGS += -Wall
 
-noinst_SCRIPTS = parse_posixio.py parse_mpi.py
-CLEANFILES = selfie_posixio_functions.h selfie_mpi_functions.h selfie_mpiio_functions.h
+noinst_SCRIPTS = parse_posixio.py parse_mpi.py parse_mio.py parse_maestro.py
+CLEANFILES = selfie_posixio_functions.h selfie_mpi_functions.h selfie_mpiio_functions.h selfie_mio_functions.h selfie_maestro_functions.h
 
 selfie.c: ${top_srcdir}/include/selfie.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_plugins.h
 
@@ -31,7 +32,9 @@ selfie_papi.c: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie
 
 selfie_omp.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_omp.h
 
-selfie_mio.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_mio.h ${top_srcdir}/src/selfie_mio_functions.h
+selfie_mio.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_mio.h
+
+selfie_maestro.cpp: ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_maestro.h
 
 selfie_posixio.lo: selfie_posixio_functions.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_posixio.h
 
@@ -48,5 +51,12 @@ selfie_mpiio.lo: selfie_mpiio_functions.h ${top_srcdir}/include/selfie_tools.h $
 selfie_mpiio_functions.h: $(srcdir)/parse_mpi.py ${top_srcdir}/etc/selfie_mpiio_functions.txt
 	$(PYTHON) $(srcdir)/parse_mpi.py -n mpiio -i ${top_srcdir}/etc/selfie_mpiio_functions.txt -o $@
 
+selfie_mio.lo: selfie_mio_functions.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_mio.h
+
 selfie_mio_functions.h: $(srcdir)/parse_mio.py ${top_srcdir}/etc/selfie_mio_functions.txt
 	$(PYTHON) $(srcdir)/parse_mio.py ${top_srcdir}/etc/selfie_mio_functions.txt -o $@
+
+selfie_maestro.lo: selfie_maestro_functions.h ${top_srcdir}/include/selfie_tools.h ${top_srcdir}/include/selfie_maestro.h
+
+selfie_maestro_functions.h: $(srcdir)/parse_maestro.py ${top_srcdir}/etc/selfie_maestro_functions.txt
+	$(PYTHON) $(srcdir)/parse_maestro.py ${top_srcdir}/etc/selfie_maestro_functions.txt -o $@

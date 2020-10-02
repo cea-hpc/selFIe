@@ -197,6 +197,16 @@ if test $ENABLEMIO = 1; then
    AC_DEFINE([HAVE_MIO],[],[Enable MIO (Mero IO for Maestro) profiling])
 fi
 
+# Check for MIO
+AC_ARG_WITH([maestro],
+    [AS_HELP_STRING([--with-maestro],
+        [Enable Maestro API profiling])],
+    [ENABLEMAESTRO=1],
+    [ENABLEMAESTRO=0])
+
+if test $ENABLEMAESTRO = 1; then
+   AC_DEFINE([HAVE_MAESTRO],[],[Enable Maestro API profiling])
+fi
 
 OLD_AM_CXXFLAGS="$AM_CXXFLAGS"
 OLD_AM_CPPFLAGS="$AM_CPPFLAGS"
