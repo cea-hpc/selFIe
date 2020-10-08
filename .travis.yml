@@ -101,7 +101,7 @@ before_install: |
     case "${OS_NAME}" in
       centos)
          if [ $OS_VERSION -eq 6 ]; then docker exec $CONTAINER yum install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 gcc-c++;fi
-         if [ $OS_VERSION -eq 7 ]; then docker exec $CONTAINER yum install -y epel-release deltarpm; docker exec $CONTAINER yum install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 python3-pip gcc-c++; pip3 install docopt; fi
+         if [ $OS_VERSION -eq 7 ]; then docker exec $CONTAINER yum install -y epel-release deltarpm; docker exec $CONTAINER yum install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 python3-pip gcc-c++; docker exec $CONTAINER pip3 install docopt; fi
          if [ $OS_VERSION -eq 8 ]; then docker exec $CONTAINER dnf install -y dnf-plugins-core ; docker exec $CONTAINER dnf config-manager --enable PowerTools ; docker exec $CONTAINER dnf install -y autoconf automake libtool papi papi-devel libyaml libyaml-devel make gcc python3 python3-docopt gcc-c++;fi
         ;;
       *)
