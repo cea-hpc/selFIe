@@ -45,6 +45,9 @@ extern plugins_functions selfie_plugin_omp;
 #ifdef HAVE_MIO
 extern plugins_functions selfie_plugin_mio;
 #endif
+#ifdef HAVE_MAESTRO
+extern plugins_functions selfie_plugin_maestro;
+#endif
 // ADD NEW PLUGIN BEFORE THIS LINE
 
 /// \brief Arrays of plugins_functions (GLOBAL)
@@ -70,6 +73,9 @@ plugins_functions *selfie_plugins[] = {
 #endif
 #ifdef HAVE_MIO
     &selfie_plugin_mio,
+#endif
+#ifdef HAVE_MAESTRO
+    &selfie_plugin_maestro,
 #endif
     NULL};
 

@@ -47,6 +47,7 @@ missing
 src/selfie_posixio_functions.h
 src/selfie_mpi_functions.h
 src/selfie_mpiio_functions.h
+src/selfie_mio_functions.h
 test/*.sh
 test/*.exe
 test/*.log
