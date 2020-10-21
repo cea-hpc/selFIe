@@ -37,8 +37,8 @@ extern "C"
 #include <execinfo.h>
 #include <fenv.h>
 
-  /// we need this function to get the number of threads
-  extern int omp_get_num_threads();
+  // if no OpenMP found, return 1 OpenMP thread
+  int selfie_no_omp_get_num_threads() { return 1; }
 
   /// \typedef selfie_omp_plugin_global_data
   /// \brief   selfie_omp_plugin_global_data of struct
@@ -60,6 +60,8 @@ extern "C"
     int num_threads;
     /// catch the start of a parallel
     long double time_parallel_start;
+    /// we need this function to get the number of threads
+    int (*selfie_omp_get_num_threads)();
   } selfie_omp_plugin_global_data;
 
   /// \brief gomp plugin data (GLOBAL)
@@ -75,12 +77,25 @@ extern "C"
 #ifdef HAVE_DEBUG
     PINFO("");
 #endif
-
+    selfie_gomp_plugin_global_data.selfie_omp_get_num_threads =
+	(int (*)(void))dlsym(RTLD_NEXT, "omp_get_num_threads");
+    if (selfie_gomp_plugin_global_data.selfie_omp_get_num_threads == NULL)
+    {
+      selfie_gomp_plugin_global_data.selfie_omp_get_num_threads =
+	  &selfie_no_omp_get_num_threads;
+    }
     selfie_gomp_plugin_global_data.cnt_parallel = 0;
     selfie_gomp_plugin_global_data.time_parallel = 0.;
     selfie_gomp_plugin_global_data.ponderated_sum = 0.;
     selfie_gomp_plugin_global_data.level_parallel = 0;
 
+    selfie_iomp_plugin_global_data.selfie_omp_get_num_threads =
+	(int (*)(void))dlsym(RTLD_NEXT, "omp_get_num_threads");
+    if (selfie_iomp_plugin_global_data.selfie_omp_get_num_threads == NULL)
+    {
+      selfie_iomp_plugin_global_data.selfie_omp_get_num_threads =
+	  &selfie_no_omp_get_num_threads;
+    }
     selfie_iomp_plugin_global_data.cnt_parallel = 0;
     selfie_iomp_plugin_global_data.time_parallel = 0.;
     selfie_iomp_plugin_global_data.ponderated_sum = 0.;
@@ -104,7 +119,8 @@ extern "C"
     {
       selfie_gomp_plugin_global_data.time_parallel_start = selfie_mysecond();
       selfie_gomp_plugin_global_data.cnt_parallel++;
-      selfie_gomp_plugin_global_data.num_threads = omp_get_num_threads();
+      selfie_gomp_plugin_global_data.num_threads =
+	  selfie_gomp_plugin_global_data.selfie_omp_get_num_threads();
     }
   }
 
@@ -169,7 +185,7 @@ extern "C"
 		    selfie_iomp_plugin_global_data.time_parallel_start;
       selfie_iomp_plugin_global_data.time_parallel += time;
       selfie_iomp_plugin_global_data.ponderated_sum +=
-	  omp_get_num_threads() * time;
+	  selfie_iomp_plugin_global_data.selfie_omp_get_num_threads() * time;
     }
     __builtin_return(ret);
   }
