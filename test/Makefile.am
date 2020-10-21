@@ -1,16 +1,22 @@
 TESTS = hello.exe \
+	hello_omp.exe \
 	selfie_hello.sh \
 	selfie_genconf.sh \
 	selfie_helloconf.sh \
 	selfie_hellolog.sh \
 	selfie_hellovar.sh 
-check_PROGRAMS = hello.exe
+check_PROGRAMS = hello.exe \
+	hello_omp.exe
 check_SCRIPTS = selfie_hello.sh \
 	selfie_genconf.sh \
 	selfie_helloconf.sh \
 	selfie_hellolog.sh \
 	selfie_hellovar.sh
 hello_exe_SOURCES = hello.c
+hello_omp_exe_SOURCES = hello_omp.c
+hello_omp_exe_CFLAGS = $(OPENMP_CFLAGS) $(CFLAGS)
+hello_omp_exe_LDFLAGS = $(OPENMP_CFLAGS) $(LDFLAGS)
+
 CLEANFILES = selfie.conf \
 	selfie_hello.sh \
 	selfie_genconf.sh \
