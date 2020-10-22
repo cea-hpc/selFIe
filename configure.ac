@@ -21,6 +21,9 @@ AC_DEFINE([SELFIE_VERSION],[selfie_version],[Version])
 # use the C++ compiler for the following checks
 AC_LANG([C])
 
+# find OpenMP flag
+AC_OPENMP
+
 # use Python
 AM_PATH_PYTHON([3.4])
 
